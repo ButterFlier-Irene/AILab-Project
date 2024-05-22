@@ -3,7 +3,7 @@ import mediapipe as mp
 from torch.utils.data import Dataset
 from torchvision.io import read_image
 import pandas as pd
-
+import cv2
 class MpDataset(Dataset):
     #mandatory methods
     def __init__(self, labels_path, imgs_dir, transform = None):
@@ -19,14 +19,16 @@ class MpDataset(Dataset):
 
     def __getitem__(self, index):
         #we create the images path
-        img_path = os.join(self.imgs_dir, self.labels.iloc[index, 0])#usually pandas reads by columns
+        img_path = os.path.join(self.imgs_dir, self.labels.iloc[index, 2], self.labels.iloc[index, 1])
         #now we have a directory and a set of filenames. We want to put them together
-        img = read_image(img_path)
-        label = self.labels.iloc[index, 1]
+        img = cv2.imread(img_path)
+        label = self.labels.iloc[index, 2]
         if self.transform:
             img =self.transform(img)
         return img, label
 
-#labels = pd.read_csv('labels.csv')
-data = MpDataset('labels.csv', 'Dataset_ASL')
-#print(data)
+labels = pd.read_csv('dataset.csv')
+data = MpDataset('dataset.csv', 'Dataset_ASL')
+#img = data[6]
+#cv2.imshow('img', img[0])
+#cv2.waitKey(0)
