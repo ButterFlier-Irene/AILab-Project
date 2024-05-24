@@ -21,6 +21,21 @@ class MpDataset(Dataset):
     def len(self):
         #since we have the label list we can simply return:
         return len(self.labels)
+    
+    def addBorder(img):
+        #to add a border to imgs that landmarks are not detected
+        border_color = [0,0,0]
+        border_size = 248
+        borderedimg = cv2.copyMakeBorder(
+            img,
+            top=border_size,
+            bottom=border_size,
+            left=80,
+            right=80,
+            borderType=cv2.BORDER_CONSTANT,
+            value=border_color
+        )
+        return borderedimg   #the input img to the process func
 
     def __getitem__(self, index):
         #we create the images path
