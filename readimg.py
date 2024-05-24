@@ -25,7 +25,7 @@ class MpDataset(Dataset):
     def addBorder(img):
         #to add a border to imgs that landmarks are not detected
         border_color = [0,0,0]
-        border_size = 248
+        border_size = 248    #values that works best for our dataset
         borderedimg = cv2.copyMakeBorder(
             img,
             top=border_size,
