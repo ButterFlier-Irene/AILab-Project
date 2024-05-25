@@ -22,7 +22,7 @@ class MpDataset(Dataset):
         #since we have the label list we can simply return:
         return len(self.labels)
     
-    def addBorder(img):
+    def addBorder(self, img):
         #to add a border to imgs that landmarks are not detected
         border_color = [0,0,0]
         border_size = 248    #values that works best for our dataset
@@ -37,7 +37,7 @@ class MpDataset(Dataset):
         )
         return borderedimg   #the input img to the process func
 
-    def coo(self, img, result):
+    def coo(self, img, result): #getting coordinates from hand
         for hand_landmarks in result.multi_hand_landmarks:
             for dot in hand_landmarks.landmark:
                     xy = [dot.x,dot.y]
@@ -48,18 +48,40 @@ class MpDataset(Dataset):
         img_path = os.path.join(self.imgs_dir, self.labels.iloc[index, 2], self.labels.iloc[index, 1])
         #now we have a directory and a set of filenames. We want to put them together
         img = cv2.imread(img_path)
-        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  #we need to convert since otherwise mediapipe doesn't detect the landmarks.
-        label = self.labels.iloc[index, 2]
-        result = self.transform(imgRGB)
-        if result.multi_hand_landmarks:
-            self.coo(imgRGB, result)
+        img= cv2.normalize(img, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U)
+        if img is None:
+            print("Error: Unable to load the image.", self.imgs_dir)
         else:
-            self.addBorder(imgRGB)                            #here we will apply mediapipe
+            imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  #we need to convert since otherwise mediapipe doesn't detect the landmarks.
+            label = self.labels.iloc[index, 2]
+            result = self.transform(imgRGB)
             if result.multi_hand_landmarks:
                 self.coo(imgRGB, result)
-        return imgRGB, self.coordinates, label       #will return a tuple containing (image, the LIST of coordinates, label of the image)
+            else:
+                self.addBorder(imgRGB)                            #here we will apply mediapipe
+                if result.multi_hand_landmarks:
+                    self.coo(imgRGB, result)
+            return self.coordinates, label       #will return a tuple containing (image, the LIST of coordinates, label of the image)
 
 labels = pd.read_csv('dataset.csv')
 data = MpDataset('dataset.csv', 'Dataset_ASL')
-img = data[100]
-print(img[1]) #it will print the coordinates of mediapipe
+#img = data[100]
+#print(img[1]) #it will print the coordinates of mediapipe
+
+'''
+I want to save the coordinates into some kind of (possible numpy) array
+What is the possible form?
+label, coordinate [0, 0], coordinate[0,1]..., coordinate[n,0], coordinate[n,1]
+'''
+img = data[1]
+img2 = data[2]
+d={'label': [], 'coo': []}
+for c in (img, img2):
+    if c!= None:
+        print(c[0])
+        print(c[1])
+        d['label']+=(c[1])
+        d['coo']+=(c[0])
+print(d)
+#df=pd.DataFrame(data=d)
+#df.to_csv('coo.csv')
