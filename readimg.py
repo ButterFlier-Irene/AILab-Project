@@ -10,10 +10,10 @@ hands = hands_mp.Hands(static_image_mode = True , min_detection_confidence = 0.3
 
 class MpDataset(Dataset):
     #mandatory methods
-    def __init__(self, labels_path, imgs_dir, transform = None):
+    def __init__(self, labels_path, imgs_dir):
         super().__init__()
         self.imgs_dir= imgs_dir
-        self.transform=transform #storing transform to apply
+        self.transform= hands.process #storing transform to apply
         self.labels = pd.read_csv(labels_path)
         self.coordinates=[]
         #we are storing only labels, not images, since there could be a saturation problem
@@ -37,6 +37,12 @@ class MpDataset(Dataset):
         )
         return borderedimg   #the input img to the process func
 
+    def coo(self, img, result):
+        for hand_landmarks in result.multi_hand_landmarks:
+            for dot in hand_landmarks.landmark:
+                    xy = [dot.x,dot.y]
+                    self.coordinates.append((xy))
+
     def __getitem__(self, index):
         #we create the images path
         img_path = os.path.join(self.imgs_dir, self.labels.iloc[index, 2], self.labels.iloc[index, 1])
@@ -44,16 +50,16 @@ class MpDataset(Dataset):
         img = cv2.imread(img_path)
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  #we need to convert since otherwise mediapipe doesn't detect the landmarks.
         label = self.labels.iloc[index, 2]
-        if self.transform:                             #here we will apply mediapipe
-            result = self.transform(imgRGB)
+        result = self.transform(imgRGB)
+        if result.multi_hand_landmarks:
+            self.coo(imgRGB, result)
+        else:
+            self.addBorder(imgRGB)                            #here we will apply mediapipe
             if result.multi_hand_landmarks:
-                for hand_landmarks in result.multi_hand_landmarks:
-                    for dot in hand_landmarks.landmark:
-                            xy = [dot.x,dot.y]
-                            self.coordinates.append((xy))
-        return imgRGB, self.coordinates, label        #will return a tuple containing (image, the LIST of coordinates, label of the image)
+                self.coo(imgRGB, result)
+        return imgRGB, self.coordinates, label       #will return a tuple containing (image, the LIST of coordinates, label of the image)
 
 labels = pd.read_csv('dataset.csv')
-data = MpDataset('dataset.csv', 'Dataset_ASL', hands.process)
+data = MpDataset('dataset.csv', 'Dataset_ASL')
 img = data[100]
 print(img[1]) #it will print the coordinates of mediapipe
