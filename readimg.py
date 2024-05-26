@@ -51,19 +51,17 @@ class MpDataset(Dataset):
         #now we have a directory and a set of filenames. We want to put them together
         img = cv2.imread(img_path)
         img= cv2.normalize(img, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U)
-        if img is None:
-            print("Error: Unable to load the image.", img_path)
+        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  #we need to convert since otherwise mediapipe doesn't detect the landmarks.
+        label = self.labels.iloc[index, 2]
+        result = self.transform(imgRGB)
+        if result.multi_hand_landmarks:
+            self.coo(imgRGB, result)
         else:
-            imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  #we need to convert since otherwise mediapipe doesn't detect the landmarks.
-            label = self.labels.iloc[index, 2]
-            result = self.transform(imgRGB)
+            self.addBorder(imgRGB)                            #here we will apply mediapipe
             if result.multi_hand_landmarks:
                 self.coo(imgRGB, result)
             else:
-                self.addBorder(imgRGB)                            #here we will apply mediapipe
-                if result.multi_hand_landmarks:
-                    self.coo(imgRGB, result)
-            #return self.coordinates, label       #will return a tuple containing (image, the LIST of coordinates, label of the image)
+                self.coordinates.append([])
 
 labels = pd.read_csv('dataset.csv')
 data = MpDataset('dataset.csv', 'Dataset_ASL')
@@ -79,20 +77,5 @@ I want to save the coordinates into some kind of (possible numpy) array
 What is the possible form?
 label, coordinate [0, 0], coordinate[0,1]..., coordinate[n,0], coordinate[n,1]
 '''
-
-'''img = data[1]
-print(len(img[0]))
-img2 = data[2]
-print(len(img2[0]))
-img3=data[3]
-print(len(img3[0]))
-d={'label': [], 'coo': []}
-for c in (img,img2, img3):
-    if c!= None:
-        print(len(c[0]))
-        print(len(c[1]))
-        d['label'] = c[1]
-        d['coo'] = c[0]
-#print(d)
-#df=pd.DataFrame(data=d)
-#df.to_csv('coo.csv')'''
+df=pd.DataFrame(data=d)
+df.to_csv('coo.csv')
