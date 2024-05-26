@@ -57,7 +57,8 @@ class MpDataset(Dataset):
         if result.multi_hand_landmarks:
             self.coo(imgRGB, result)
         else:
-            self.addBorder(imgRGB)                            #here we will apply mediapipe
+            imgRGB= self.addBorder(imgRGB)                            #here we will apply mediapipe
+            result = self.transform(imgRGB)
             if result.multi_hand_landmarks:
                 self.coo(imgRGB, result)
             else:
