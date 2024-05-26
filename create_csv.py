@@ -7,8 +7,6 @@ images = []
 #print(os.listdir('Dataset_ASL'))
 for path in os.listdir('Dataset_ASL'):
     for i in os.listdir('Dataset_ASL/'+path):
-        print(c[0])
-        print(c[1])
         labels.append(path)
         images.append(i)
 #print(len(labels))
