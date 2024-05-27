@@ -61,8 +61,6 @@ class MpDataset(Dataset):
             result = self.transform(imgRGB)
             if result.multi_hand_landmarks:
                 self.coo(imgRGB, result)
-            else:
-                print(img_path)
 
 labels = pd.read_csv('dataset.csv')
 data = MpDataset('dataset.csv', 'Dataset_ASL')
