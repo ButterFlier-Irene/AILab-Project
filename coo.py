@@ -6,7 +6,9 @@ from torch.utils.data import Dataset
 
 landmarks = mp.solutions #solutions module of mediapipe contains the ML models for body parts
 hands_mp = landmarks.hands 
-hands = hands_mp.Hands(static_image_mode = True , min_detection_confidence = 0.3)
+hands = hands_mp.Hands(static_image_mode = True, 
+                       min_detection_confidence = 0.3,
+                       max_num_hands = 1)
 
 class MpDataset(Dataset):
     #mandatory methods
@@ -41,8 +43,7 @@ class MpDataset(Dataset):
         coo = []
         for hand_landmarks in result.multi_hand_landmarks:
             for dot in hand_landmarks.landmark:
-                    coo.append([dot.x,dot.y])
-
+                    coo+=[dot.x,dot.y]
         self.coordinates.append(coo)
 
     def __getitem__(self, index):
@@ -77,4 +78,4 @@ What is the possible form?
 label, coordinate [0, 0], coordinate[0,1]..., coordinate[n,0], coordinate[n,1]
 '''
 df=pd.DataFrame(data=d)
-df.to_csv('coo.csv')
+df.to_csv('coordinates.csv')
