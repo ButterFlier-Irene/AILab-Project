@@ -61,8 +61,6 @@ class MpDataset(Dataset):
             result = self.transform(imgRGB)
             if result.multi_hand_landmarks:
                 self.coo(imgRGB, result)
-            else:
-                self.coordinates.append([])
 
 labels = pd.read_csv('dataset.csv')
 data = MpDataset('dataset.csv', 'Dataset_ASL')
@@ -70,8 +68,8 @@ for c in data:
     pass
 d = {'labels': data.labels['label'], 'coordinates': data.coordinates}
 #print(d)
-print(len(d['labels']))
-print(len(d['coordinates']))
+#print(len(d['labels']))
+#print(len(d['coordinates']))
 
 '''
 I want to save the coordinates into some kind of (possible numpy) array
