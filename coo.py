@@ -6,7 +6,7 @@ from torch.utils.data import Dataset
 
 landmarks = mp.solutions #solutions module of mediapipe contains the ML models for body parts
 hands_mp = landmarks.hands 
-hands = hands_mp.Hands(static_image_mode = True , min_detection_confidence = 0.3)
+hands = hands_mp.Hands(static_image_mode = True , min_detection_confidence = 0.3, max_num_hands=1)
 
 class MpDataset(Dataset):
     #mandatory methods
