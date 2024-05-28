@@ -9,6 +9,8 @@ import ast
 from sklearn.decomposition import PCA as RandomizedPCA 
 from sklearn.pipeline import make_pipeline
 import seaborn as sns
+import pickle
+import joblib
 
 data = pd.read_csv('coordinates.csv') #we have directly the file as a pandas dataframe
 
@@ -65,7 +67,7 @@ for i, axi in enumerate(ax.flat):
 fig.suptitle('Predicted Names; Incorrect Labels in Red', size=14);
 '''
 
-
+'''
 # Clasification report
 
 label = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
@@ -81,3 +83,8 @@ sns.heatmap(mat.T, square=True, annot=True, fmt='d', cbar=False,
 plt.xlabel('true label')
 plt.ylabel('predicted label');
 plt.show()
+
+'''
+
+joblib.dump(model, "model.joblib")
+
