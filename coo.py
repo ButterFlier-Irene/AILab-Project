@@ -26,7 +26,9 @@ The new dataset will appear in 'coo.csv' file'''
 
 landmarks = mp.solutions
 hands_mp = landmarks.hands 
-hands = hands_mp.Hands(static_image_mode = True , min_detection_confidence = 0.3, max_num_hands=1)
+hands = hands_mp.Hands(static_image_mode = True, 
+                       min_detection_confidence = 0.3,
+                       max_num_hands = 1)
 
 ####################################################################
 
@@ -86,7 +88,10 @@ class MpDataset(Dataset):
         for hand_landmarks in result.multi_hand_landmarks:
             for dot in hand_landmarks.landmark:
                     coo+=[dot.x,dot.y]
+<<<<<<< HEAD
+=======
 
+>>>>>>> Claudi_Branch
         self.coordinates.append(coo)
 
     def __getitem__(self, index):
@@ -124,4 +129,4 @@ for c in data:
 d = {'labels': data.labels['label'], 'coordinates': data.coordinates}
 
 df=pd.DataFrame(data=d)
-df.to_csv('coo.csv')
+df.to_csv('coordinates.csv')
