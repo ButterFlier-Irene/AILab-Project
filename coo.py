@@ -88,10 +88,6 @@ class MpDataset(Dataset):
         for hand_landmarks in result.multi_hand_landmarks:
             for dot in hand_landmarks.landmark:
                     coo+=[dot.x,dot.y]
-<<<<<<< HEAD
-=======
-
->>>>>>> Claudi_Branch
         self.coordinates.append(coo)
 
     def __getitem__(self, index):
