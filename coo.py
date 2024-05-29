@@ -1,7 +1,7 @@
 import os
 import cv2
 import pandas as pd
-import mediapipe as mp
+from handLandmarks import GetLandmarks
 from torch.utils.data import Dataset
 '''
 The purpose of this python file is to create
@@ -24,21 +24,13 @@ The new dataset will appear in 'coo.csv' file'''
 # detected hand will be only one
 ####################################################################
 
-landmarks = mp.solutions
-hands_mp = landmarks.hands 
-hands = hands_mp.Hands(static_image_mode = True, 
-                       min_detection_confidence = 0.3,
-                       max_num_hands = 1)
-
-####################################################################
-
 class MpDataset(Dataset):
     '''we are creating a class by augmenting the Dataset
        class. We will get automatically the images from a
        given dataset containing paths and labels, we will 
        apply a mediapipe function to get the coordinates
     '''
-    def __init__(self, imgs_dir = str, root = str, transform = hands.process):
+    def __init__(self, imgs_dir = str, root = str):
         '''initialization:
         root: containing the root folder name
         imgs_dir: containing the name of the dataset
@@ -48,11 +40,10 @@ class MpDataset(Dataset):
         coordinates: will contain the coordinates 
                      of the hand
         transform = will contain by default the 
-                    mediapipe function hands.process
+                    mediapipe function hands.process # I removed this because now mediapipe functions are all in handLanmarks.py
         '''
         super().__init__()
         self.root = root
-        self.transform = transform
         self.labels = pd.read_csv(imgs_dir)
         self.coordinates=[]
 
@@ -78,18 +69,6 @@ class MpDataset(Dataset):
         )
         return borderedimg
 
-    def coo(self, img, result):
-        '''gets the coordinates for the hand
-        it adds the coordinats directly to the
-        coordinates of the class
-        '''
-        coo = []
-
-        for hand_landmarks in result.multi_hand_landmarks:
-            for dot in hand_landmarks.landmark:
-                    coo+=[dot.x,dot.y]
-        self.coordinates.append(coo)
-
     def __getitem__(self, index):
         '''by recreating the image path
         we will read the image from the directory
@@ -98,21 +77,20 @@ class MpDataset(Dataset):
         variable
         '''
         img_path = os.path.join(self.root, self.labels.iloc[index, 2], self.labels.iloc[index, 1])
-
+        
         img = cv2.imread(img_path)
         img = cv2.normalize(img, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U)
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
+        
         label = self.labels.iloc[index, 2]
-        result = self.transform(imgRGB)
-
-        if result.multi_hand_landmarks:      #case where we detect the landmarks
-            self.coo(imgRGB, result)
+        result = GetLandmarks(imgRGB)[0]
+        if result != '':                     #case where we detect the landmarks
+            self.coordinates.append(result)     
         else:                                #case where we need to add the border
             imgRGB= self.addBorder(imgRGB)
-            result = self.transform(imgRGB)
-            self.coo(imgRGB, result)
-
+            result = GetLandmarks(imgRGB)[0]
+            self.coordinates.append(result)
+           
 ####################################################################
 
 data = MpDataset('dataset.csv', 'Dataset_ASL')
