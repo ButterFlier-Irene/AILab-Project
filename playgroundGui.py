@@ -73,10 +73,12 @@ def display_sign():
 listbox = Listbox(win, width=50, height=20)
 listbox.pack(pady=20)
 
+def run():
+    os.system('python detectSignsCamera.py')
 
 # Create a button to trigger the display of a new sign
 #display_button = Button(win, text="Show Sign", command=display_sign)
-display_button = Button(win, text="Show Sign", command = os.system('python detectSignsCamera.py'))
+display_button = Button(win, text="Show Sign", command = run)
 display_button.pack(pady=10)
 
 
@@ -94,6 +96,7 @@ def lbl2():
     global label1
     cv2.destroyAllWindows()
     label1.destroy()
-'''    
+'''
+    
     
 win.mainloop()

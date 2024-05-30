@@ -1,4 +1,5 @@
 import mediapipe as mp 
+import cv2
 
 landmarks = mp.solutions
 hands_mp = landmarks.hands 
@@ -31,4 +32,29 @@ def DrawLandmarks(image, result):
                 drawing_styles_mp.get_default_hand_landmarks_style(),   #for colored landmarks
                 drawing_styles_mp.get_default_hand_connections_style()  #for colored edges between landmarks
             )
+    return image
+
+
+def DrawBoundingBox(image, result, predicted_character):
+    if result.multi_hand_landmarks:
+        for hand_landmarks in result.multi_hand_landmarks:
+            h, w, _ = image.shape  # Get image dimensions
+            x_coords = [lm.x for lm in hand_landmarks.landmark]
+            y_coords = [lm.y for lm in hand_landmarks.landmark]
+            
+            # Convert normalized coordinates to pixel values
+            min_x = int(min(x_coords) * w) - 10
+            max_x = int(max(x_coords) * w) - 10
+            min_y = int(min(y_coords) * h) - 10
+            max_y = int(max(y_coords) * h) - 10
+            # Draw rectangle on the image
+            cv2.rectangle(image, (min_x, min_y), (max_x, max_y), (0, 0, 0), 4)
+            cv2.putText(image, 
+                        predicted_character, 
+                        (min_x, min_y - 10), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 
+                        1.3, 
+                        (0, 0, 0), 
+                        3,
+                        cv2.LINE_AA)
     return image

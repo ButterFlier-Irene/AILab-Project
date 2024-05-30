@@ -12,7 +12,8 @@ We are getting 21 points (42 coordinates)
 and their respective label.
 On top of this we will build our machine learning
 model (see 'Model.py' file)
-The new dataset will appear in 'coo.csv' file'''
+The new dataset will appear in 'coo.csv' file
+'''
 ####################################################################
 # Mediapipe contains mp.solutions, where we have the hands' landmarks.
 # Since we are woking in static images, we'll need 'static_image_mode = True'
