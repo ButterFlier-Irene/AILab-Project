@@ -11,7 +11,7 @@ import seaborn as sns
 import joblib
 
 # defining pca model
-pca = RandomizedPCA(n_components=42, whiten=True, random_state=42)
+#pca = RandomizedPCA(n_components=42, whiten=True, random_state=42)
 #model = SVC(kernel = 'rbf', class_weight='balanced') #'C=1000000.0, gamma=0.001
 #model = make_pipeline(pca, svc)
 #####################################################################################
