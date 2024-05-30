@@ -3,7 +3,7 @@ from sklearn.metrics import classification_report, confusion_matrix, accuracy_sc
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV, train_test_split
+from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV, train_test_split,ValidationCurveDisplay, validation_curve,learning_curve,LearningCurveDisplay
 import ast 
 from sklearn.decomposition import PCA as RandomizedPCA 
 from sklearn.pipeline import make_pipeline
@@ -41,6 +41,23 @@ print(acc) # 95.22% accuracy
 #joblib.dump(model, "model.joblib")
 ######################################################################################
 
+param_name, param_range = "C", np.logspace(-2, 10, 13)
+#param_name, param_range = "gamma", np.logspace(-9, 3, 13)
+
+train_scores, val_scores = validation_curve(SVC(), X_train, y_train, param_name=param_name, param_range=param_range, cv=5)
+display = ValidationCurveDisplay(
+    param_name=param_name, param_range=param_range,
+    train_scores=train_scores, test_scores=val_scores, score_name="Score"
+)
+display.plot()
+plt.show()
+
+
+train_sizes, train_scores, test_scores = learning_curve(SVC(), coo, target)
+#display = LearningCurveDisplay.from_estimator(svc, n_data, target, train_sizes=[50, 80, 110], cv=5)
+display = LearningCurveDisplay(train_sizes=train_sizes, train_scores=train_scores, test_scores=test_scores, score_name="Score")
+display.plot()
+plt.show()
 
 '''
 # Clasification report
