@@ -1,70 +1,66 @@
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split, StratifiedKFold, RandomizedSearchCV
+from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV, train_test_split, validation_curve
 import ast 
 from sklearn.decomposition import PCA as RandomizedPCA 
 from sklearn.pipeline import make_pipeline
 import seaborn as sns
-import pickle
 import joblib
 
-data = pd.read_csv('coordinates.csv') #we have directly the file as a pandas dataframe
-
-
-skf = StratifiedKFold(n_splits=5, shuffle=True)
-# Cross-validation
-for fold, (train_index, test_index) in enumerate(skf.split(data.coordinates,data.labels)):
-    X_train, X_test = data.coordinates[train_index], data.coordinates[test_index]
-    y_train, y_test = np.array(data.labels[train_index]), np.array(data.labels[test_index])
-
-X_train = np.array([np.array(co) for co in X_train.apply(ast.literal_eval)]).reshape(2010, 42)
-X_test = np.array([np.array(co) for co in X_test.apply(ast.literal_eval)]).reshape(502, 42) #(no of total values, no of rows for each , no of columns) 
-# print(X_train.shape)
-# print(X_test.shape)
-
-
+# defining pca model
 pca = RandomizedPCA(n_components=42, whiten=True, random_state=42)
-svc = SVC(kernel='rbf', class_weight='balanced', C = 100, gamma = 0.01)
-model = make_pipeline(pca, svc)
-model.fit(X_train, y_train)
-# use the model to predict the test data, use it on new data
-y_pred = model.predict(X_test)
+#svc = SVC(kernel = 'rbf', class_weight='balanced') #C=10000000.0, gamma=0.01) 
+#model = make_pipeline(pca, svc)
+#####################################################################################
+data = pd.read_csv('coordinates.csv') #we have directly the file as a pandas dataframe
+#print(len(data.labels))
+coo = np.array([np.array(co) for co in data.coordinates.apply(ast.literal_eval)]).reshape(2512, 42)
+target = np.array(data.labels)
 
-# compute the accuracy: how good is the model
-acc = accuracy_score(y_test, y_pred)
-print('Accuracy:', acc) # 95% accuracy
+X_train, X_test, y_train, y_test = train_test_split(coo, target, random_state=0, train_size=0.7)
+#model.fit(X_train, y_train)
+
+pca.fit(X_train, y_train)
+n_data = pca.transform(coo)
+X_train, X_test, y_train, y_test = train_test_split(n_data, target, random_state=0, train_size=0.7)
+#svc.fit(X_train, y_train)
+C_range = list(np.logspace(-2, 10, 13))
+gamma_range = list(np.logspace(-9, 3, 13))
+
+svc = SVC(kernel = 'rbf', class_weight='balanced', C=10000000.0) #C=10000000.0, gamma=0.01
+train_score, val_score = validation_curve(svc, X_train, y_train, param_name='gamma', param_range= gamma_range, cv=5)
+plt.plot(gamma_range, np.median(train_score, 1), color='blue', label='training score')
+plt.plot(gamma_range, np.median(val_score, 1), color='red', label = 'validation score')
+plt.legend(loc='best')
+plt.ylim(0,1) #scaling the image
+plt.xlim(0,0.1) #scaling the image
+plt.xlabel('gamma')
+plt.ylabel('score')
+plt.show()
 
 '''
-# Tuning the hyperparameters
+skf = StratifiedKFold(n_splits=5, shuffle=True)
 
 C_range = list(np.logspace(-2, 10, 13))
 gamma_range = list(np.logspace(-9, 3, 13))
 param_dist = dict(svc__C=C_range, svc__gamma=gamma_range)
 grid = RandomizedSearchCV(model, param_dist, cv=skf, scoring='accuracy', n_iter=10)
 grid.fit(X_train, y_train)
+#print(grid.best_params_)
+#print(grid.best_score_, grid.best_estimator_)
 
-# pd.DataFrame(grid.cv_results_).to_csv('grid_search_results.csv')
+model = grid.best_estimator_
 
-print(grid.best_score_, grid.best_params_)
-print(grid.best_estimator_)
-'''
+y_pred = model.predict(X_test)
+acc = accuracy_score(y_test, y_pred)
 
+print(acc) # 94% accuracy
 
-'''
-# WIP
-
-fig, ax = plt.subplots(4, 6)
-for i, axi in enumerate(ax.flat):
-                axi.imshow(X_test[i].reshape(62, 47), cmap='bone')
-                axi.set(xticks=[], yticks=[])
-                axi.set_ylabel(faces.target_names[y_pred[i]].split()[-1],
-                        color='black' if y_pred[i] == y_test[i] else 'red') 
-                
-fig.suptitle('Predicted Names; Incorrect Labels in Red', size=14);
+joblib.dump(model, "model.joblib")
+######################################################################################
 '''
 
 '''
@@ -81,8 +77,9 @@ sns.heatmap(mat.T, square=True, annot=True, fmt='d', cbar=False,
                         xticklabels= label,
                         yticklabels = label)
 plt.xlabel('true label')
-plt.ylabel('predicted label');
+plt.ylabel('predicted label')
 plt.show()
+'''
 
 '''
 
