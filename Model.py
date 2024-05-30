@@ -12,7 +12,7 @@ import joblib
 
 # defining pca model
 #pca = RandomizedPCA(n_components=42, whiten=True, random_state=42)
-#model = SVC(kernel = 'rbf', class_weight='balanced') #'C=1000000.0, gamma=0.001
+#model = SVC(kernel = 'rbf', class_weight='balanced') #'C=1000000.0, gamma=0.001 are the values for the best accuracy we had
 #model = make_pipeline(pca, svc)
 #####################################################################################
 data = pd.read_csv('coordinates.csv') #we have directly the file as a pandas dataframe
@@ -20,7 +20,9 @@ coo = np.array([np.array(co) for co in data.coordinates.apply(ast.literal_eval)]
 target = np.array(data.labels)
 #####################################################################################
 X_train, X_test, y_train, y_test = train_test_split(coo, target, random_state=0, train_size=0.7)
+print(len(X_train))
 #####################################################################################
+
 skf = StratifiedKFold(n_splits=5, shuffle=True)
 
 param_grid = {'C': list(np.logspace(-2, 10, 13)),  
@@ -38,13 +40,14 @@ acc = accuracy_score(y_test, y_pred)
 
 print(acc) # 95.22% accuracy
 
-#joblib.dump(model, "model.joblib")
+#joblib.dump(model, "model.joblib") #careful: it will save every time the new model (always with different score) into 'model.joblib' file
 ######################################################################################
 
-param_name, param_range = "C", np.logspace(-2, 10, 13)
+#param_name, param_range = "C", np.logspace(-2, 10, 13)
 #param_name, param_range = "gamma", np.logspace(-9, 3, 13)
-
-train_scores, val_scores = validation_curve(SVC(), X_train, y_train, param_name=param_name, param_range=param_range, cv=5)
+'''
+#Validation curve
+train_scores, val_scores = validation_curve(SVC(C=1000000.0), X_train, y_train, param_name=param_name, param_range=param_range, cv=5)
 display = ValidationCurveDisplay(
     param_name=param_name, param_range=param_range,
     train_scores=train_scores, test_scores=val_scores, score_name="Score"
@@ -52,13 +55,15 @@ display = ValidationCurveDisplay(
 display.plot()
 plt.show()
 
-
-train_sizes, train_scores, test_scores = learning_curve(SVC(), coo, target)
+'''
+'''
+#Learning curve
+train_sizes, train_scores, test_scores = learning_curve(SVC(kernel='rbf', C=1000000.0, gamma=0.001), coo, target)
 #display = LearningCurveDisplay.from_estimator(svc, n_data, target, train_sizes=[50, 80, 110], cv=5)
 display = LearningCurveDisplay(train_sizes=train_sizes, train_scores=train_scores, test_scores=test_scores, score_name="Score")
 display.plot()
 plt.show()
-
+'''
 '''
 # Clasification report
 
