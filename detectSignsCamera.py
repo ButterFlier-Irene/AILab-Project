@@ -4,6 +4,11 @@ from PIL import Image, ImageTk
 import cv2
 import numpy as np
 import joblib
+import random
+import pandas as pd
+
+
+
 
 def detect_image_gui(tk_win: Tk):
     
@@ -15,19 +20,33 @@ def detect_image_gui(tk_win: Tk):
     height = tk_win.winfo_screenheight()
     print("TKinter window size:", width, height)
     
-    # Pack the Top Title on top-center of the window:
-    Label(tk_win, text='ASL Alphabet Recognition', font=('Comic Sans MS', 24, 'bold'), bd=5, bg='#20262E', fg='#F5EAEA', relief=GROOVE).pack(pady=20, padx=20, anchor='n', side='top')
-        
+  
     # Set the geometry of the main window to fill the entire screen
     tk_win.geometry("%dx%d" % (width, height))
     
+    #Label(tk_win, text='ASL Alphabet Recognition', font=('Comic Sans MS', 24, 'bold'), bd=5, bg='#20262E', fg='#F5EAEA', relief=GROOVE).pack(anchor='n', side='top')
+    
+    
+    Label(tk_win, text="Label 1").grid(row=0, column=1)
+    Label(tk_win, text="Label 2").grid(row=1, column=1)
+    Label(tk_win, text="Label 1").grid(row=2, column=1)
+    
     # Create a frame that fills the entire window with a specific background color
-    frame_1 = Frame(tk_win, width=width, height=height, bg="#181823").place(x=50, y=50)
+    frame_1 = Frame(tk_win, width=500, height=height).place(x=0, y=0)
     label_widget_video = Label(frame_1)
-    label_widget_video.pack(pady=20, padx=20, anchor='s', side='bottom', expand=True)
+    label_widget_video.grid(row=0, column=0)
     
     detect_signs(tk_win, label_widget_video)
     
+   # Pack the Top Title on top-center of the window:
+
+    
+    
+    
+    
+    
+
+
 
 def detect_signs(win_tk: Tk,  label_widget_video: Label):
     
@@ -41,22 +60,44 @@ def detect_signs(win_tk: Tk,  label_widget_video: Label):
 
     print("Camera is on... Entering the loop...")
     
+    lab = {'b':'Dataset_ASL/0/hand1_0_bot_seg_2_cropped.jpeg','1': 'Dataset_ASL/1/hand1_1_bot_seg_2_cropped.jpeg', 'v': 'Dataset_ASL/1/hand1_1_bot_seg_2_cropped.jpeg'}
+
+    def getNextLetter(): 
+        return random.choice(list(lab.keys()))
+    
+    letter = getNextLetter()
+    
+    data = pd.read_csv('dataset.csv')
+    values = dict.fromkeys(set(data.label), 0)
+    
+    
     while cap.isOpened():
         _, img = cap.read()
-        image_rgb = cv2.cvtColor(img,cv2.COLOR_BGR2RGB) # converting the channels
+        img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB) # converting the channels
+        coordinates, result = GetLandmarks(img)
         
-        coordinates, result = GetLandmarks(image_rgb)
-
+        cv2.putText(img,  f"Show Letter {letter.upper()}",  (50, 70),  cv2.FONT_HERSHEY_SIMPLEX, 2,  (0, 255, 255),  2,  cv2.LINE_4) 
+        print(values)
         if coordinates != '':
-            img = cv2.cvtColor(DrawLandmarks(image_rgb, result), cv2.COLOR_RGB2BGR)
+            img = cv2.cvtColor(DrawLandmarks(img, result), cv2.COLOR_RGB2BGR)
             
             coordinates = np.array(coordinates).reshape(1, 42)
             prediction = our_model.predict(coordinates)
             predicted_character = labels[(prediction[0])]
             
-            img = DrawBoundingBox(img, result, predicted_character)
+            img = cv2.cvtColor(DrawBoundingBox(img, result, predicted_character), cv2.COLOR_RGB2BGR)
             print(predicted_character)
-        
+            if prediction == letter:
+                print('correct')
+                color = (255,255,255)
+                v = values.get(letter) + 1
+                up_dict = {letter:v}
+                #print("Dictionary before updation:",dict)
+                values.update(up_dict)
+                letter = getNextLetter()
+
+        img = cv2.resize(img, None, fx = 0.9, fy = 1.0)
+        #cv2.imshow('image' , img)
         # Convert the image to a PIL image
         image_tk = Image.fromarray(img)
         
