@@ -8,8 +8,6 @@ import random
 import pandas as pd
 
 
-
-
 def detect_image_gui(tk_win: Tk):
     
     # Set the title of the main window
@@ -38,19 +36,20 @@ def detect_image_gui(tk_win: Tk):
     
     detect_signs(tk_win, label_widget_video)
     
-   # Pack the Top Title on top-center of the window:
-
-    
-    
-    
-    
-    
-
 
 
 def detect_signs(win_tk: Tk,  label_widget_video: Label):
     
     labels = {'0':'0','1': '1', '2': '2', '3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9','a':'A','b':'B','c':'C','d':'D','e':'E','f':'F','g':'G','h':'H','i':'I','j':'J','k':'K','l':'L','m':'M','n':'N','o':'O','p':'P','q':'Q','r':'R','s':'S','t':'T','u':'U','v':'V','w':'W','x':'X','y':'Y','z':'Z'}
+    
+    
+    letter = get_next_letter()
+    
+    def show_hint(letter):
+        
+        
+    
+    Button(win_tk, text="Hint", command = show_hint).pack(pady=10)
     
     # Load the pre-trained model
     our_model = joblib.load("model.joblib")
@@ -62,10 +61,9 @@ def detect_signs(win_tk: Tk,  label_widget_video: Label):
     
     lab = {'b':'Dataset_ASL/0/hand1_0_bot_seg_2_cropped.jpeg','1': 'Dataset_ASL/1/hand1_1_bot_seg_2_cropped.jpeg', 'v': 'Dataset_ASL/1/hand1_1_bot_seg_2_cropped.jpeg'}
 
-    def getNextLetter(): 
+    def get_next_letter(): 
         return random.choice(list(lab.keys()))
     
-    letter = getNextLetter()
     
     data = pd.read_csv('dataset.csv')
     values = dict.fromkeys(set(data.label), 0)
@@ -94,7 +92,7 @@ def detect_signs(win_tk: Tk,  label_widget_video: Label):
                 up_dict = {letter:v}
                 #print("Dictionary before updation:",dict)
                 values.update(up_dict)
-                letter = getNextLetter()
+                letter = get_next_letter()
 
         img = cv2.resize(img, None, fx = 0.9, fy = 1.0)
         #cv2.imshow('image' , img)

@@ -10,22 +10,6 @@ import sys
 labels = {'0':'0','1': '1', '2': '2', '3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9','a':'A','b':'B','c':'C','d':'D','e':'E','f':'F','g':'G','h':'H','i':'I','j':'J','k':'K','l':'L','m':'M','n':'N','o':'O','p':'P','q':'Q','r':'R','s':'S','t':'T','u':'U','v':'V','w':'W','x':'X','y':'Y','z':'Z'}
 
 
-'''
-# everything is a Widget, so create the root widget
-root = Tk()
-
-# create a label Widget
-myLabel = Label(root, text="Hello World!").grid(row=0, column=5)
-
-# put the label widget in the window(root widget)
-# to put stuff (show) on the screen with tkinter, use the pack():
-# myLabel.pack() 
-
-
-# create the constant/main loop to keep the window open
-root.mainloop()
-'''
-
 
 # Create the main window
 win = Tk()
