@@ -6,6 +6,7 @@ import numpy as np
 import joblib
 import random
 import pandas as pd
+import time
 
 
 
@@ -27,7 +28,7 @@ def detect_image_gui(tk_win: Tk):
     #Label(tk_win, text='ASL Alphabet Recognition', font=('Comic Sans MS', 24, 'bold'), bd=5, bg='#20262E', fg='#F5EAEA', relief=GROOVE).pack(anchor='n', side='top')
     
     
-    Label(tk_win, text="Label 1").grid(row=0, column=1)
+    Label(tk_win, text="Label 1").grid(sticky="W", row=0, column=1)
     Label(tk_win, text="Label 2").grid(row=1, column=1)
     Label(tk_win, text="Label 1").grid(row=2, column=1)
     
@@ -48,12 +49,13 @@ def detect_image_gui(tk_win: Tk):
 
 
 
-def detect_signs(win_tk: Tk,  label_widget_video: Label):
+def detect_signs(tk_win: Tk,  label_widget_video: Label):
     
     labels = {'0':'0','1': '1', '2': '2', '3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9','a':'A','b':'B','c':'C','d':'D','e':'E','f':'F','g':'G','h':'H','i':'I','j':'J','k':'K','l':'L','m':'M','n':'N','o':'O','p':'P','q':'Q','r':'R','s':'S','t':'T','u':'U','v':'V','w':'W','x':'X','y':'Y','z':'Z'}
     
     # Load the pre-trained model
     our_model = joblib.load("model.joblib")
+    color = (0,0,0)
     
     # Init videocapture
     cap = cv2.VideoCapture(0)
@@ -63,6 +65,7 @@ def detect_signs(win_tk: Tk,  label_widget_video: Label):
     lab = {'b':'Dataset_ASL/0/hand1_0_bot_seg_2_cropped.jpeg','1': 'Dataset_ASL/1/hand1_1_bot_seg_2_cropped.jpeg', 'v': 'Dataset_ASL/1/hand1_1_bot_seg_2_cropped.jpeg'}
 
     def getNextLetter(): 
+        time.sleep(1)
         return random.choice(list(lab.keys()))
     
     letter = getNextLetter()
@@ -70,6 +73,14 @@ def detect_signs(win_tk: Tk,  label_widget_video: Label):
     data = pd.read_csv('dataset.csv')
     values = dict.fromkeys(set(data.label), 0)
     
+    #for item in values:
+        
+    for k, v in values.items():
+        print(k, v)
+    
+    #Label(tk_win, text="Lalala", anchor="e").grid(row=0, column=0)
+    
+    #Label(tk_win, text='ASL Alphabet Recognition', font=('Comic Sans MS', 24, 'bold'), bd=5, bg='#20262E', fg='#F5EAEA', relief=GROOVE).grid(row=0, column=0)
     
     while cap.isOpened():
         _, img = cap.read()
@@ -85,7 +96,7 @@ def detect_signs(win_tk: Tk,  label_widget_video: Label):
             prediction = our_model.predict(coordinates)
             predicted_character = labels[(prediction[0])]
             
-            img = cv2.cvtColor(DrawBoundingBox(img, result, predicted_character), cv2.COLOR_RGB2BGR)
+            img = cv2.cvtColor(DrawBoundingBox(img, result, predicted_character,color), cv2.COLOR_RGB2BGR)
             print(predicted_character)
             if prediction == letter:
                 print('correct')
@@ -94,6 +105,7 @@ def detect_signs(win_tk: Tk,  label_widget_video: Label):
                 up_dict = {letter:v}
                 #print("Dictionary before updation:",dict)
                 values.update(up_dict)
+                
                 letter = getNextLetter()
 
         img = cv2.resize(img, None, fx = 0.9, fy = 1.0)
@@ -109,7 +121,7 @@ def detect_signs(win_tk: Tk,  label_widget_video: Label):
         label_widget_video.image = final_tk_image
         
         # make TKinter window to refresh:
-        win_tk.update()
+        tk_win.update()
 
     cap.release()
 
