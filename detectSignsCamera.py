@@ -25,7 +25,6 @@ while cap.isOpened():
         img = DrawBoundingBox(img, result, predicted_character)
         print(predicted_character)
         
-    
     cv2.imshow('Detect Sign',img)
     k = cv2.waitKey(10)
 
@@ -33,4 +32,4 @@ while cap.isOpened():
         break
 
 cap.release()  
-cv2.destroyAllWindows()  
+cv2.destroyAllWindows()         
