@@ -35,9 +35,11 @@ def DrawLandmarks(image, result):
     return image
 
 
-def DrawBoundingBox(image, result, predicted_character):
+def DrawBoundingBox(image, result, predicted_character,color):
     if result.multi_hand_landmarks:
         for hand_landmarks in result.multi_hand_landmarks:
+            
+            
             h, w, _ = image.shape  # Get image dimensions
             x_coords = [lm.x for lm in hand_landmarks.landmark]
             y_coords = [lm.y for lm in hand_landmarks.landmark]
@@ -48,13 +50,13 @@ def DrawBoundingBox(image, result, predicted_character):
             min_y = int(min(y_coords) * h) - 10
             max_y = int(max(y_coords) * h) - 10
             # Draw rectangle on the image
-            cv2.rectangle(image, (min_x, min_y), (max_x, max_y), (0, 0, 0), 4)
+            cv2.rectangle(image, (min_x, min_y), (max_x, max_y), color,4)
             cv2.putText(image, 
                         predicted_character, 
                         (min_x, min_y - 10), 
                         cv2.FONT_HERSHEY_SIMPLEX, 
                         1.3, 
-                        (0, 0, 0), 
+                        color, 
                         3,
                         cv2.LINE_AA)
     return image
