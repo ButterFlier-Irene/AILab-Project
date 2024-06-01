@@ -22,7 +22,7 @@ def detect_image_gui(tk_win: Tk):
     print("TKinter window size:", width, height)
     
     # Set the geometry of the main window to fill the entire screen
-    tk_win.geometry("%dx%d" % (width, height))
+    #tk_win.geometry("%dx%d" % (width, height))
 
     # Create a frame that fills the entire window with a specific background color
     frame_1 = Frame(tk_win, width=width, height=height,bg="#494848").place(x=0, y=0)
