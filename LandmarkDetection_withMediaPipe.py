@@ -5,6 +5,7 @@
 # Also this google colab code which detected landmarks on images: https://colab.research.google.com/github/googlesamples/mediapipe/blob/main/examples/hand_landmarker/python/hand_landmarker.ipynb#scrollTo=s3E6NFV-00Qt
 
 import cv2
+import mediapipe as mp  #install using 'pip install mediapipe' on terminal/shell
 import numpy as np
 import joblib
 from handLandmarks import GetLandmarks
@@ -14,6 +15,8 @@ labels = {'0':'0','1': '1', '2': '2', '3':'3','4':'4','5':'5','6':'6','7':'7','8
 #VideoCapture
 
 
+#model_dict = pickle.load(open('./model.p', 'rb'))
+
 OurModel = joblib.load("model.joblib")
 
 
@@ -22,6 +25,8 @@ cap = cv2.VideoCapture(0)
 while cap.isOpened():
     ret, img = cap.read()
     image = cv2.cvtColor(img,cv2.COLOR_BGR2RGB) #converting the channels
+    #n= GetLandmarks(image)
+    #print(n)
     coordinates = GetLandmarks(image)
     #print(coordinates)
     if coordinates != []:
@@ -31,11 +36,55 @@ while cap.isOpened():
         predicted_character = labels[(prediction[0])]
         print(predicted_character)
     
+
+
     #prediction = model.predict([np.array(coordinates)])
 
     #predicted_character = labels_dict[int(prediction[0])]
 
     #print(predicted_character)
+    '''
+    result = hands.process(image)  #do hands recognition on the frames from the videocapture camera
+    #print('result',result)
+    coordinates = []  #empty array to store coordinates of landmarks 
+q
+    if result.multi_hand_landmarks:  #if many landmarks are detected
+        for hand_landmarks in result.multi_hand_landmarks:   #for each hand landmark recognised 
+
+            #this code is only for visualisation of the landmarks
+            drawing_mp.draw_landmarks(
+                img,
+                hand_landmarks,  #to draw the dots/the landmarks
+                hands_mp.HAND_CONNECTIONS, #to draw the edges between landmarks
+                drawing_styles_mp.get_default_hand_landmarks_style(),   #for colored landmarks
+                drawing_styles_mp.get_default_hand_connections_style()  #for colored edges between landmarks
+            )
+            coo = []
+
+            #this code is where the data is taken from the landmarks    
+
+            # Each landmark coordinates x and y (also z) can be obtained by : 
+            # iterating through all the hand landmarks and putting in a numpy array
+            # later we will give this numpy array to the model to predict.
+            for dot in hand_landmarks.landmark:
+                 
+                 coo += [dot.x,dot.y]
+            coordinates.append(coo)
+              #   coordinates.append((xy))
+            #print('21_Landmark_Coordinates',(coordinates))
+        coordinates = np.array(coordinates).reshape(1, 42)
+        prediction = OurModel.predict(coordinates)
+        #print()
+        predicted_character = labels[(prediction[0])]
+        #print(predicted_character)
+
+
+        #prediction = model.predict([np.array(coordinates)])
+
+        #predicted_character = labels_dict[int(prediction[0])]
+
+        #print(predicted_character)
+        '''
 
 
 
@@ -61,3 +110,9 @@ while cap.isOpened():
 
 cap.release()  
 cv2.destroyAllWindows()  
+
+
+
+
+
+
