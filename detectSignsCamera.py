@@ -45,9 +45,6 @@ def detect_image_gui(tk_win: Tk):
         detect_signs(tk_win, label_widget_video, kids_mode = False)
 
     def go_on():
-       # img = PhotoImage()
-        #i = Label(tk_win, image= img,bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
-       # i.grid(row = 1, column = 3,columnspan=2,rowspan=19, sticky='nsew')
         kids_mode_label=Label(tk_win,text='KIDS MODE',font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
         kids_mode_label.grid(row = 1, column = 3,columnspan=2,sticky='nsew')
         back_button=Button(tk_win, text="GAME MODE",command=lambda:run(), fg='black',bg='#75706f',relief=GROOVE)
@@ -58,13 +55,15 @@ def detect_image_gui(tk_win: Tk):
     run() # To make the video run without a button
 
 
+
+
+
 def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
     width = tk_win.winfo_screenwidth()
     height = tk_win.winfo_screenheight()
     score = 0
     
-    kids_imgs_dict = get_kids_dict()
-    print('hjdfbhjbg',kids_imgs_dict)
+    imgs_dict = get_kids_dict()
     labels = {'0':'0','1': '1', '2': '2', '3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9','a':'A','b':'B','c':'C','d':'D','e':'E','f':'F','g':'G','h':'H','i':'I','j':'J','k':'K','l':'L','m':'M','n':'N','o':'O','p':'P','q':'Q','r':'R','s':'S','t':'T','u':'U','v':'V','w':'W','x':'X','y':'Y','z':'Z'}
     lab = {'b':'Dataset_ASL/b/hand1_b_left_seg_1_cropped.jpeg','1': 'Dataset_ASL/1/hand1_1_bot_seg_2_cropped.jpeg', '4': 'Dataset_ASL/4/hand1_4_bot_seg_4_cropped.jpeg'}
     
@@ -82,24 +81,20 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
                 i = 2 ; a += 1 #To create 2 columns 
 
     # Function to display image given a specific label
-    def show_image(label, kids_imgs_dict):
-        if label in kids_imgs_dict:
-            image = kids_imgs_dict =[label]
-            
+    def show_image(label, imgs_dict):
+        if label in imgs_dict:
+            image = imgs_dict[label]
             # Convert the image from BGR (OpenCV format) to RGB
             image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            
             # Convert the image to a PIL format
             image_pil = Image.fromarray(image_rgb)
-            
             return image_pil
         else:
             print(f"Label '{label}' not found in the dictionary.")
             return None
 
-    def open_img(predicted_character,kids_imgs_dict):
-
-        img_pil = show_image('a',kids_imgs_dict)  # Change 'A' to any label you want to display
+    def open_img(letter,imgs_dict):
+        img_pil = show_image(letter,imgs_dict)  # Change 'A' to any label you want to display
         if img_pil:
             img_pil = img_pil.resize((250, 250))
             img_tk = ImageTk.PhotoImage(img_pil)
@@ -116,7 +111,6 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         else:
             show_hint_img = True
         
-    
 
     #To randomise the letters for game
     def getNextLetter(): 
@@ -128,6 +122,9 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
     values = dict.fromkeys(set(data.label), 0)
     if kids_mode == False:
         update_values()
+    else:
+        if letter.isalpha():
+            open_img(letter,imgs_dict)
     
     # Load the pre-trained model
     our_model = joblib.load("model.joblib")
@@ -149,7 +146,8 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
             predicted_character = labels[(prediction[0])]
             
             if kids_mode == True:
-                open_img(predicted_character,kids_imgs_dict)
+                if prediction[0].isalpha():  #checking for aphabet letters since we have only images for these
+                    open_img(prediction[0],imgs_dict)
             
             if prediction == letter:
                 color = (0,215,255)
@@ -174,7 +172,6 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         #For the hint image
         if show_hint_img == True:
             hint_image = cv2.resize(cv2.imread(lab[(letter[0])]), None, fx = 0.5, fy = 0.5)
-            #x_end = 690 + hint_image.shape[1]  #890
             x_start = img.shape[1]-hint_image.shape[1] 
             y_end = 0 + hint_image.shape[0]
             img[0:y_end,x_start :img.shape[1]] = cv2.cvtColor(hint_image, cv2.COLOR_RGB2BGR)

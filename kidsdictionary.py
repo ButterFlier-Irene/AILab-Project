@@ -1,12 +1,11 @@
 import os
 import cv2
 
-
 # Define the directory path
 photos_dir = 'kidsimgs'
 
 # Define the labels
-labels = ['a','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+labels = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
 
 # Initialize an empty dictionary to store images
 images_dict = {}
@@ -26,7 +25,7 @@ def get_kids_dict():
             
             # Read the image file using OpenCV
             image = cv2.imread(item_path)
-            
+            print(item_path, label)
             # Check if the image was successfully read
             if image is not None:
                 # Store the image in the dictionary with the corresponding label
@@ -35,7 +34,8 @@ def get_kids_dict():
                 print(f"Failed to read the image file '{item_path}'")
     else:
         print(f"The directory '{photos_dir}' does not exist.")
-    #print(images_dict)
+    
+
     return images_dict
 
 get_kids_dict()
