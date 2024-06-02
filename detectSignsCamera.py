@@ -67,7 +67,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
 
     #The labels, the letter that is recognised most will be on the top of the list in the interface
     def update_values():
-        label2=Label(tk_win,text=f' Score: {score}  No of times practised: ',font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
+        label2=Label(tk_win,text=f' Score:  {score}' ,font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
         label2.grid(row = 1, column = 3,columnspan=2,sticky='nsew')
         i = 2 ; a = 3
         for k,v in sorted(values.items(), key=lambda x: x[1], reverse=True):
@@ -134,11 +134,12 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         img = cv2.resize(img, (int((width/4)*3), height), interpolation = cv2.INTER_LINEAR)
         hint_button = Button(tk_win, text="Hint", command = show_hint,bd=3, fg='black',bg='#75706f', height=2).place(x =img.shape[1], y = 0)
         
+        
         #For the hint image
         if show_hint_img == True:
             hint_image = cv2.resize(cv2.imread(lab[(letter[0])]), None, fx = 0.5, fy = 0.5)
             #x_end = 690 + hint_image.shape[1]  #890
-            x_start = img.shape[1]-hint_image.shape[1]
+            x_start = img.shape[1]-hint_image.shape[1] 
             y_end = 0 + hint_image.shape[0]
             img[0:y_end,x_start :img.shape[1]] = cv2.cvtColor(hint_image, cv2.COLOR_RGB2BGR)
         
