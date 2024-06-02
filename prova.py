@@ -7,7 +7,7 @@ from PIL import Image, ImageTk
 photos_dir = 'kidsimgs'
 
 # Define the labels
-labels = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+labels = ['a','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
 # Initialize an empty dictionary to store images
 images_dict = {}
@@ -41,13 +41,10 @@ else:
 def show_image(label):
     if label in images_dict:
         image = images_dict[label]
-        
         # Convert the image from BGR (OpenCV format) to RGB
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        
         # Convert the image to a PIL format
         image_pil = Image.fromarray(image_rgb)
-        
         return image_pil
     else:
         print(f"Label '{label}' not found in the dictionary.")
@@ -79,9 +76,9 @@ label_widget_video = tk.Label(frame_1)
 label_widget_video.place(x=30, y=140)
 
 def open_img():
-    img_pil = show_image('A')  # Change 'A' to any label you want to display
+    img_pil = show_image('a')  # Change 'A' to any label you want to display
     if img_pil:
-        img_pil = img_pil.resize((250, 250), Image.ANTIALIAS)
+        img_pil = img_pil.resize((250, 250))
         img_tk = ImageTk.PhotoImage(img_pil)
         panel = tk.Label(root, image=img_tk)
         panel.image = img_tk  # Keep a reference to avoid garbage collection
