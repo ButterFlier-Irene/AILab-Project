@@ -8,8 +8,11 @@ import joblib
 import random
 import pandas as pd
 import time
-import IPython.display 
+#import IPython.display 
 #import playsound
+
+
+
 
 def detect_image_gui(tk_win: Tk):
     
@@ -33,7 +36,7 @@ def detect_image_gui(tk_win: Tk):
     mylabel1.grid(row = 0, columnspan=5)
 
     # Create a Listbox to display the history
-    label2=Label(tk_win,text='history:',font=('Helvetica', 16, 'bold'),bd=5,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE,width=20)
+    label2=Label(tk_win,text='Counts:',font=('Helvetica', 16, 'bold'),bd=5,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE,width=20)
     label2.grid(row = 1, column = 2,columnspan=3)
     
     # Create a Listbox to display the webcam
@@ -92,30 +95,20 @@ def detect_image_gui(tk_win: Tk):
    # Pack the Top Title on top-center of the window:
 
 
-
-
-
-
-
 def detect_signs(tk_win: Tk,  label_widget_video: Label):
     
-    letter = get_next_letter()
+    show_hint_img = False
     
-    def show_hint(letter):
+    def show_hint():
+        nonlocal show_hint_img
+        if show_hint_img:
+              show_hint_img = False
+        else:
+            show_hint_img = True
         
         
+    Button(tk_win, text="Hint", command = show_hint).grid(row=22, column=0, columnspan=2)
     
-    Button(win_tk, text="Hint", command = show_hint).pack(pady=10)
-    
-    #The labels, the letter that is recognised most will be on the top of the list in the interface
-    def update_values():
-        i = 2 ; a = 2
-        for k,v in sorted(values.items(), key=lambda x: x[1], reverse=True):
-            u = Label(tk_win,text=f'{k} : {v}',font=('Helvetica', 15, 'bold'),bg='white',fg='#374254',width=20)
-            u.grid(row=i, column=a)
-            i += 1
-            if i == 20:
-                i = 2 ; a += 2 #To create 2 columns 
     
     labels = {'0':'0','1': '1', '2': '2', '3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9','a':'A','b':'B','c':'C','d':'D','e':'E','f':'F','g':'G','h':'H','i':'I','j':'J','k':'K','l':'L','m':'M','n':'N','o':'O','p':'P','q':'Q','r':'R','s':'S','t':'T','u':'U','v':'V','w':'W','x':'X','y':'Y','z':'Z'}
     
@@ -133,6 +126,17 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label):
     #To randomise the letters for game
     def getNextLetter(): 
         return random.choice(list(lab.keys()))
+    
+    #The labels, the letter that is recognised most will be on the top of the list in the interface
+    def update_values():
+        i = 2 ; a = 2
+        for k,v in sorted(values.items(), key=lambda x: x[1], reverse=True):
+            u = Label(tk_win,text=f'{k} : {v}',font=('Helvetica', 15, 'bold'),bg='white',fg='#374254',width=20)
+            u.grid(row=i, column=a)
+            i += 1
+            if i == 20:
+                i = 2 ; a += 2 #To create 2 columns 
+    
     letter = getNextLetter()
     
     #The dictionary for the scores
@@ -163,16 +167,19 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label):
             else :
                 color = (0,0,0)     
             
-            img = cv2.cvtColor(DrawBoundingBox(img, result, predicted_character,color), cv2.COLOR_RGB2BGR)
+            img = cv2.cvtColor(DrawBoundingBox(img, result, predicted_character, color), cv2.COLOR_RGB2BGR)
             print(predicted_character)
 
         img = cv2.resize(img, None, fx = 0.7, fy = 1.0)
         
         #For the hint image
-        hint_image = cv2.resize(cv2.imread(lab[(letter[0])]), None, fx = 0.5, fy = 0.5)
-        x_end = 690 + hint_image.shape[1]
-        y_end = 0 + hint_image.shape[0]
-        img[0:y_end,690:x_end] = cv2.cvtColor(hint_image, cv2.COLOR_RGB2BGR)
+        
+        if show_hint_img:
+            print('paath to the inage: ', lab[(letter[0])])
+            hint_image = cv2.resize(cv2.imread(lab[(letter[0])]), None, fx = 0.5, fy = 0.5)
+            x_end = 690 + hint_image.shape[1]
+            y_end = 0 + hint_image.shape[0]
+            img[0:y_end,690:x_end] = cv2.cvtColor(hint_image, cv2.COLOR_RGB2BGR)
         
         # Convert the image to a PIL image
         image_tk = Image.fromarray(img)
