@@ -11,6 +11,7 @@ import time
 import IPython.display 
 import tkinter as tk
 import time
+import os
 #import playsound
 
 def detect_image_gui(tk_win: Tk):
@@ -27,7 +28,7 @@ def detect_image_gui(tk_win: Tk):
     # Set the geometry of the main window to fill the entire screen
     tk_win.geometry("%dx%d" % (width, height))
     
-    for i in range(0,21):
+    for i in range(0,17):
     # Extend down to the bottom of the maximized window
         tk_win.grid_rowconfigure(i, weight=1)
         
@@ -41,7 +42,7 @@ def detect_image_gui(tk_win: Tk):
     
     
     frame_2 = Frame(tk_win, width=int(width/4), height=height,bg="#494848").place(x=int(width-(width/4)))
-    mylabel1 = Label(frame_2,text=' ASL Alphabet Recognition ',font=('Helvetica', 26, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
+    mylabel1 = Label(frame_2,text=' ASL Alphabet Recognition ',font=('Helvetica', 10, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
     mylabel1.grid(row = 0,column=3, columnspan=2,sticky='nsew')
     
    # exit_button=Button(tk_win, text="     EXIT     ",fg='white',bg='#75706f', command=tk_win.destroy,relief=GROOVE, height= int(height/200))
@@ -103,6 +104,14 @@ def detect_image_gui(tk_win: Tk):
         back_button.grid(row=20, column=3,sticky='nsew',rowspan=2)
         
         detect_signs(tk_win, label_widget_video, kids_mode = True)
+        img_pil = kidsmode.show_image('A')  # Change 'A' to any label you want to display
+        if img_pil:
+            img_pil = img_pil.resize((250, 250), Image.ANTIALIAS)
+            img_tk = ImageTk.PhotoImage(img_pil)
+            img_label = Label(tk_win, image=img_tk, bd=3, bg='#b4b4b4', fg='#2c2c2c', relief=GROOVE)
+            img_label.image = img_tk  # Keep a reference to avoid garbage collection
+            img_label.grid(row=2, column=3, columnspan=2, rowspan=18, sticky='nsew')
+
         
        # label2=Label(tk_win,text='Images:',font=('Helvetica', 16, 'bold'),bd=5,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
        # label2.grid(row = 1, column = 3,columnspan=2)
@@ -229,18 +238,53 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         tk_win.update()
     cap.release()
 
-def kidsmode(values):
-    pass
-    '''
-    labels = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','Y','X','Z']
-    kidimages = []
+def kidsmode(predicted_character):
+    # Define the directory path
+    photos_dir = 'kidsimgs'
+    # Define the labels
+    labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    # Initialize an empty dictionary to store images
+    images_dict = {}
+    # Ensure the directory exists
+    if os.path.exists(photos_dir):
+        # Get the list of files
+        files = [f for f in os.listdir(photos_dir) if os.path.isfile(os.path.join(photos_dir, f))]
+    
+        # Check if there are more files than labels
+        if len(files) > len(labels):
+            print("Warning: There are more files than labels. Some files will not be labeled.")
+    
+        # Iterate over the files and labels
+        for label, item in zip(labels, files):
+            item_path = os.path.join(photos_dir, item)
+        
+            # Read the image file using OpenCV
+            image = cv2.imread(item_path)
+        
+            # Check if the image was successfully read
+            if image is not None:
+                # Store the image in the dictionary with the corresponding label
+                images_dict[label] = image
+            else:
+                print(f"Failed to read the image file '{item_path}'")
+    else:
+        print(f"The directory '{photos_dir}' does not exist.")
 
-    for labels in os.listdir('PHOTOS'):
-        d[labels]=kidimages                   
-
-    d={'label':labels,'img':kidimages}              
-    #d[values]=key   
-    '''
+    # Function to display image given a specific label
+    def show_image(label):
+        if label in images_dict:
+            image = images_dict[label]
+        
+            # Convert the image from BGR (OpenCV format) to RGB
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        
+            # Convert the image to a PIL format
+            image_pil = Image.fromarray(image_rgb)
+        
+            return image_pil
+        else:
+            print(f"Label '{label}' not found in the dictionary.")
+            return None
 
 
 if __name__ == "__main__":
