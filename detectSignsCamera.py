@@ -10,30 +10,25 @@ import time
 #import playsound
 
 def detect_image_gui(tk_win: Tk):
-    tk_win.update_idletasks()
-    tk_win.attributes('-fullscreen', True)
-    tk_win.state('iconic')
-    width = tk_win.winfo_screenwidth()
-    height = tk_win.winfo_screenheight()
+    
     # Set the title of the main window
     tk_win.title('ASL Alphabet Recognition')
     
     # Get the screen width and height
-    #width = tk_win.winfo_screenwidth()
-    #height = tk_win.winfo_screenheight()
+    width = tk_win.winfo_screenwidth()
+    height = tk_win.winfo_screenheight()
     
     # Set the geometry of the main window to fill the entire screen
-    tk_win.geometry("%dx%d" % (width, height))  #to wrap
-
+    #tk_win.geometry("%dx%d" % (width, height))  #to wrap
+    #We divided the screen in 22 rows and 6 columns. The videocapture occupies the first three, the rest the other.
     for i in range(0,21):
         tk_win.grid_rowconfigure(i, weight=1)
-    tk_win.grid_columnconfigure(0, weight=5)
-    tk_win.grid_columnconfigure(1, weight=3)
-    tk_win.grid_columnconfigure(2, weight=3)
+    tk_win.grid_columnconfigure(0, weight=4)
+    tk_win.grid_columnconfigure(1, weight=2)
+    tk_win.grid_columnconfigure(2, weight=2)
     # Create a frame that fills the entire window with a specific background color
     video_frame = Frame(tk_win, width=width, height=height,bg="#494848").place(x=0, y=0)
     label_widget_video = Label(video_frame)
-    label_widget_video.pack(fill = 'both', expand = True)
     label_widget_video.grid(row = 0, column = 0, sticky = 'w',rowspan=22, columnspan=1)
     
     
@@ -60,7 +55,7 @@ def detect_image_gui(tk_win: Tk):
         kids_mode_label.grid(row = 1, column = 1,columnspan=2,sticky='nsew')
         
         back_button=Button(tk_win, text="GAME MODE",command=lambda:run(), fg='black',bg='#75706f',relief=GROOVE)
-        back_button.grid(row=20, column=2,sticky='nsew',rowspan=2)
+        back_button.grid(row=20, column=1,sticky='nsew',rowspan=2)
         
         detect_signs(tk_win, label_widget_video, kids_mode = True)
  
@@ -186,10 +181,9 @@ if __name__ == "__main__":
     # Create the main window
     tk_win = Tk() 
     detect_image_gui(tk_win)
-    tk_win.mainloop()
 #tk_win.state('zoomed')
 #tk_win.attributes('-fullscreen', True)
 #tk_win.attributes('-zoomed', True)
-#tk_win.mainloop()
+tk_win.mainloop()
 
     
