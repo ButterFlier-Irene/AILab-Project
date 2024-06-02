@@ -19,16 +19,17 @@ def detect_image_gui(tk_win: Tk):
     height = tk_win.winfo_screenheight()
     
     # Set the geometry of the main window to fill the entire screen
-    #tk_win.geometry("%dx%d" % (width, height))  #to wrap
+    tk_win.geometry("%dx%d" % (width, height))  #to wrap
     #We divided the screen in 22 rows and 6 columns. The videocapture occupies the first three, the rest the other.
     for i in range(0,21):
         tk_win.grid_rowconfigure(i, weight=1)
-    tk_win.grid_columnconfigure(0, weight=4)
-    tk_win.grid_columnconfigure(1, weight=2)
-    tk_win.grid_columnconfigure(2, weight=2)
+    tk_win.grid_columnconfigure(0, weight=5)
+    tk_win.grid_columnconfigure(1, weight=3)
+    tk_win.grid_columnconfigure(2, weight=3)
     # Create a frame that fills the entire window with a specific background color
     video_frame = Frame(tk_win, width=width, height=height,bg="#494848").place(x=0, y=0)
     label_widget_video = Label(video_frame)
+    label_widget_video.pack(fill = 'both', expand = True)
     label_widget_video.grid(row = 0, column = 0, sticky = 'w',rowspan=22, columnspan=1)
     
     
@@ -49,10 +50,10 @@ def detect_image_gui(tk_win: Tk):
     def kids_mode_on():
         img = PhotoImage()
         i = Label(tk_win, image= img,bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
-        i.grid(row = 1, column = 2,columnspan=2,rowspan=19, sticky='nsew')
+        i.grid(row = 1, column = 1,columnspan=2,rowspan=19, sticky='nsew')
         
         kids_mode_label=Label(tk_win,text='KIDS MODE',font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
-        kids_mode_label.grid(row = 1, column = 2,columnspan=2,sticky='nsew')
+        kids_mode_label.grid(row = 1, column = 1,columnspan=2,sticky='nsew')
         
         back_button=Button(tk_win, text="GAME MODE",command=lambda:run(), fg='black',bg='#75706f',relief=GROOVE)
         back_button.grid(row=20, column=2,sticky='nsew',rowspan=2)
@@ -181,7 +182,7 @@ if __name__ == "__main__":
     # Create the main window
     tk_win = Tk() 
     detect_image_gui(tk_win)
-#tk_win.state('zoomed')
+    tk_win.state('zoomed')
 #tk_win.attributes('-fullscreen', True)
 #tk_win.attributes('-zoomed', True)
 tk_win.mainloop()
