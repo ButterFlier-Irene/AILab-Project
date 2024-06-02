@@ -32,8 +32,8 @@ def detect_image_gui(tk_win: Tk):
     label_widget_video = Label(frame_1)
     label_widget_video.grid(row = 2, column = 0, sticky = 'w',rowspan=22, columnspan=2)
 
-    mylabel1 = Label(tk_win,text='ASL Alphabet Recognition',font=('Helvetica', 26, 'bold'),bd=5,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE,width=43)
-    mylabel1.grid(row = 0, columnspan=5)
+    #mylabel1 = Label(tk_win,text='ASL Alphabet Recognition',font=('Helvetica', 26, 'bold'),bd=5,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE,width=43)
+    #mylabel1.grid(row = 0, columnspan=5)
 
     # Create a Listbox to display the history
     label2=Label(tk_win,text='Counts:',font=('Helvetica', 16, 'bold'),bd=5,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE,width=20)
@@ -107,7 +107,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label):
             show_hint_img = True
         
         
-    Button(tk_win, text="Hint", command = show_hint).grid(row=22, column=0, columnspan=2)
+    Button(tk_win, text="Hint", command = show_hint).grid(row=1, column=0, columnspan=2, sticky='e')
     
     
     labels = {'0':'0','1': '1', '2': '2', '3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9','a':'A','b':'B','c':'C','d':'D','e':'E','f':'F','g':'G','h':'H','i':'I','j':'J','k':'K','l':'L','m':'M','n':'N','o':'O','p':'P','q':'Q','r':'R','s':'S','t':'T','u':'U','v':'V','w':'W','x':'X','y':'Y','z':'Z'}
