@@ -9,6 +9,7 @@ import pandas as pd
 import IPython.display 
 import time
 import os
+from kidsdictionary import get_kids_dict
 #import playsound
 
 def detect_image_gui(tk_win: Tk):
@@ -44,9 +45,9 @@ def detect_image_gui(tk_win: Tk):
         detect_signs(tk_win, label_widget_video, kids_mode = False)
 
     def go_on():
-        img = PhotoImage()
-        i = Label(tk_win, image= img,bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
-        i.grid(row = 1, column = 3,columnspan=2,rowspan=19, sticky='nsew')
+       # img = PhotoImage()
+        #i = Label(tk_win, image= img,bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
+       # i.grid(row = 1, column = 3,columnspan=2,rowspan=19, sticky='nsew')
         kids_mode_label=Label(tk_win,text='KIDS MODE',font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
         kids_mode_label.grid(row = 1, column = 3,columnspan=2,sticky='nsew')
         back_button=Button(tk_win, text="GAME MODE",command=lambda:run(), fg='black',bg='#75706f',relief=GROOVE)
@@ -62,6 +63,8 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
     height = tk_win.winfo_screenheight()
     score = 0
     
+    kids_imgs_dict = get_kids_dict()
+    print('hjdfbhjbg',kids_imgs_dict)
     labels = {'0':'0','1': '1', '2': '2', '3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9','a':'A','b':'B','c':'C','d':'D','e':'E','f':'F','g':'G','h':'H','i':'I','j':'J','k':'K','l':'L','m':'M','n':'N','o':'O','p':'P','q':'Q','r':'R','s':'S','t':'T','u':'U','v':'V','w':'W','x':'X','y':'Y','z':'Z'}
     lab = {'b':'Dataset_ASL/b/hand1_b_left_seg_1_cropped.jpeg','1': 'Dataset_ASL/1/hand1_1_bot_seg_2_cropped.jpeg', '4': 'Dataset_ASL/4/hand1_4_bot_seg_4_cropped.jpeg'}
     
@@ -77,6 +80,32 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
             i += 1
             if i == 20:
                 i = 2 ; a += 1 #To create 2 columns 
+
+    # Function to display image given a specific label
+    def show_image(label, kids_imgs_dict):
+        if label in kids_imgs_dict:
+            image = kids_imgs_dict =[label]
+            
+            # Convert the image from BGR (OpenCV format) to RGB
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            
+            # Convert the image to a PIL format
+            image_pil = Image.fromarray(image_rgb)
+            
+            return image_pil
+        else:
+            print(f"Label '{label}' not found in the dictionary.")
+            return None
+
+    def open_img(predicted_character,kids_imgs_dict):
+
+        img_pil = show_image('a',kids_imgs_dict)  # Change 'A' to any label you want to display
+        if img_pil:
+            img_pil = img_pil.resize((250, 250))
+            img_tk = ImageTk.PhotoImage(img_pil)
+            panel = Label(tk_win, image=img_tk)
+            panel.image = img_tk  # Keep a reference to avoid garbage collection
+            panel.grid(row = 2, column = 3,columnspan=2,rowspan=18, sticky='nsew')
                 
     show_hint_img = False
     
@@ -111,12 +140,16 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB) # converting the channels
         coordinates, result = GetLandmarks(img)
         cv2.putText(img,  f"Show Letter {letter.upper()}",  (50, 100),  cv2.FONT_HERSHEY_SIMPLEX, 2,  (255, 255, 255),  6,  cv2.LINE_4) 
-
+        #if kids_mode == True:
+          #  open_img()
         if coordinates != '':
             img = cv2.cvtColor(DrawLandmarks(img, result), cv2.COLOR_RGB2BGR)
             coordinates = np.array(coordinates).reshape(1, 42)
             prediction = our_model.predict(coordinates)
             predicted_character = labels[(prediction[0])]
+            
+            if kids_mode == True:
+                open_img(predicted_character,kids_imgs_dict)
             
             if prediction == letter:
                 color = (0,215,255)
@@ -126,6 +159,8 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
                 if kids_mode == False:
                     score += 10
                     update_values()
+               # else: 
+                  #  open_img(predicted_character)
                 letter = getNextLetter()
             else :
                 color = (0,0,0)     
@@ -158,11 +193,12 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         tk_win.update()
     cap.release()
 
+'''
 def kidsmode(predicted_character):
     # Define the directory path
     photos_dir = 'kidsimgs'
     # Define the labels
-    labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    labels = ['a',]
     # Initialize an empty dictionary to store images
     images_dict = {}
     # Ensure the directory exists
@@ -191,21 +227,21 @@ def kidsmode(predicted_character):
         print(f"The directory '{photos_dir}' does not exist.")
 
     # Function to display image given a specific label
-    def show_image(label):
-        if label in images_dict:
-            image = images_dict[label]
-        
-            # Convert the image from BGR (OpenCV format) to RGB
-            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        
-            # Convert the image to a PIL format
-            image_pil = Image.fromarray(image_rgb)
-        
-            return image_pil
-        else:
-            print(f"Label '{label}' not found in the dictionary.")
-            return None
-
+        def show_image(predicted_character ):
+            if label in images_dict:
+                image = images_dict[label]
+            
+                # Convert the image from BGR (OpenCV format) to RGB
+                image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            
+                # Convert the image to a PIL format
+                image_pil = Image.fromarray(image_rgb)
+            
+                return image_pil
+            else:
+                print(f"Label '{label}' not found in the dictionary.")
+                return None
+'''
 
 if __name__ == "__main__":
     # Create the main window
