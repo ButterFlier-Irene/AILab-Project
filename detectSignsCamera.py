@@ -94,24 +94,24 @@ def detect_image_gui(tk_win: Tk):
         
 
     def go_on():
+        global img_pil,img_label,img_tk
         img = PhotoImage()
-        i = Label(tk_win, image= img,bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
+        i = Label(tk_win, image=img,bd=3, bg='#b4b4b4', fg='#2c2c2c', relief=GROOVE)
         i.grid(row = 1, column = 3,columnspan=2,rowspan=19, sticky='nsew')
         kids_mode_label=Label(tk_win,text='KIDS MODE',font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
         kids_mode_label.grid(row = 1, column = 3,columnspan=2,sticky='nsew')
         
         back_button=Button(tk_win, text="GAME MODE",command=lambda:run(), fg='black',bg='#75706f',relief=GROOVE)
         back_button.grid(row=20, column=3,sticky='nsew',rowspan=2)
-        
         detect_signs(tk_win, label_widget_video, kids_mode = True)
+        
         img_pil = kidsmode.show_image('A')  # Change 'A' to any label you want to display
         if img_pil:
-            img_pil = img_pil.resize((250, 250), Image.ANTIALIAS)
+            #img_pil = img_pil.resize((250, 250), Image.ANTIALIAS)
             img_tk = ImageTk.PhotoImage(img_pil)
-            img_label = Label(tk_win, image=img_tk, bd=3, bg='#b4b4b4', fg='#2c2c2c', relief=GROOVE)
+            img_label = Label(tk_win, image=img_tk)
             img_label.image = img_tk  # Keep a reference to avoid garbage collection
             img_label.grid(row=2, column=3, columnspan=2, rowspan=18, sticky='nsew')
-
         
        # label2=Label(tk_win,text='Images:',font=('Helvetica', 16, 'bold'),bd=5,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
        # label2.grid(row = 1, column = 3,columnspan=2)

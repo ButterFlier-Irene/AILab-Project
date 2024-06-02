@@ -89,5 +89,8 @@ def open_img():
 
 btn = tk.Button(root, text='Open Image', command=open_img)
 btn.pack()
+image=Image.open('kidsimgs/a.png').resize((50,50))
+image = ImageTk.PhotoImage(image)
+
 
 root.mainloop()
