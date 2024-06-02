@@ -20,10 +20,11 @@ def detect_image_gui(tk_win: Tk):
     
     # Set the geometry of the main window to fill the entire screen
     #tk_win.geometry("%dx%d" % (width, height))  #to wrap
-    
+    #We divided the screen in 22 rows and 6 columns. The videocapture occupies the first three, the rest the other.
     for i in range(0,21):
         tk_win.grid_rowconfigure(i, weight=1)
-        
+    for i in range(0, 5):
+        tk_win.grid_columnconfigure(i, weight=1)
     # Create a frame that fills the entire window with a specific background color
     video_frame = Frame(tk_win, width=width, height=height,bg="#494848").place(x=0, y=0)
     label_widget_video = Label(video_frame)
@@ -31,8 +32,8 @@ def detect_image_gui(tk_win: Tk):
     
     
     title_frame = Frame(tk_win, width=int(width/4), height=height,bg="#494848").place(x=int(width-(width/4)))
-    title_label = Label(title_frame,text=' ASL Alphabet Recognition ',font=('Arial', 24, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
-    title_label.grid(row = 0,column=3, columnspan=2,sticky='nsew')
+    title_label = Label(title_frame,text=' ASL Alphabet Recognition ',font=('Arial', 19, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
+    title_label.grid(row = 0,column=3, columnspan=3,sticky='nsew')
     
     exit_button=Button(tk_win, text="EXIT",fg='black',bg='#75706f', command=tk_win.destroy,relief=GROOVE,height= int(height/250),padx=20)
     exit_button.grid(row=20, column=4,rowspan=2, sticky='nsew')
@@ -50,7 +51,7 @@ def detect_image_gui(tk_win: Tk):
         i.grid(row = 1, column = 3,columnspan=2,rowspan=19, sticky='nsew')
         
         kids_mode_label=Label(tk_win,text='KIDS MODE',font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
-        kids_mode_label.grid(row = 1, column = 3,columnspan=2,sticky='nsew')
+        kids_mode_label.grid(row = 1, column = 3,columnspan=3,sticky='nsew')
         
         back_button=Button(tk_win, text="GAME MODE",command=lambda:run(), fg='black',bg='#75706f',relief=GROOVE)
         back_button.grid(row=20, column=3,sticky='nsew',rowspan=2)
@@ -75,7 +76,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
     #The labels, the letter that is recognised most will be on the top of the list in the interface
     def update_values():
         label2=Label(tk_win,text=f' Score:  {score}' ,font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
-        label2.grid(row = 1, column = 3,columnspan=2,sticky='nsew')
+        label2.grid(row = 1, column = 3,columnspan=3,sticky='nsew')
         i = 2 ; a = 3
         for k,v in sorted(values.items(), key=lambda x: x[1], reverse=True):
             letter_label =  Label(tk_win, text=f'{k.upper()}  =  {v}',font=('Helvetica', 16, 'bold'),bd=3,bg='white',fg='#374254',relief=GROOVE)
@@ -179,7 +180,7 @@ if __name__ == "__main__":
     # Create the main window
     tk_win = Tk() 
     detect_image_gui(tk_win)
-tk_win.state('zoomed')
+#tk_win.state('zoomed')
 #tk_win.attributes('-fullscreen', True)
 #tk_win.attributes('-zoomed', True)
 tk_win.mainloop()
