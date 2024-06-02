@@ -8,7 +8,7 @@ import joblib
 import random
 import pandas as pd
 import time
-import IPython.display 
+#import IPython.display 
 import tkinter as tk
 import time
 #import playsound
@@ -41,7 +41,7 @@ def detect_image_gui(tk_win: Tk):
     
     
     frame_2 = Frame(tk_win, width=int(width/4), height=height,bg="#494848").place(x=int(width-(width/4)))
-    mylabel1 = Label(frame_2,text=' ASL Alphabet Recognition ',font=('Helvetica', 26, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
+    mylabel1 = Label(frame_2,text=' ASL Alphabet Recognition ',font=('Arial', 24, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
     mylabel1.grid(row = 0,column=3, columnspan=2,sticky='nsew')
     
    # exit_button=Button(tk_win, text="     EXIT     ",fg='white',bg='#75706f', command=tk_win.destroy,relief=GROOVE, height= int(height/200))
@@ -130,7 +130,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
     
     #The labels, the letter that is recognised most will be on the top of the list in the interface
     def update_values():
-        label2=Label(tk_win,text=f' Score: {score}  No of times practised: ',font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
+        label2=Label(tk_win,text=f' Score:  {score}' ,font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
         label2.grid(row = 1, column = 3,columnspan=2,sticky='nsew')
         i = 2 ; a = 3
         for k,v in sorted(values.items(), key=lambda x: x[1], reverse=True):
@@ -162,7 +162,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
     print("Camera is on... Entering the loop...")
     
     #For test reasons I added only 3 letters to the game
-    lab = {'b':'Dataset_ASL/b/hand1_b_left_seg_1_cropped.jpeg','1': 'Dataset_ASL/1/hand1_1_bot_seg_2_cropped.jpeg', '4': 'Dataset_ASL/4/hand1_4_bot_seg_4_cropped.jpeg'}
+    lab = {'b':'Dataset_ASL/b/hand1_b_left_seg_1_cropped.jpeg','1': 'Dataset_ASL/1/hand1_1_bot_seg_2_cropped.jpeg', '4': 'Dataset_ASL/4/hand1_4_bot_seg_4_cropped.jpeg', '0':'Dataset_ASL/0/hand1_0_bot_seg_5_cropped.jpeg', '2':'Dataset_ASL/2/hand1_2_bot_seg_1_cropped.jpeg', '3':'Dataset_ASL/3/hand1_3_bot_seg_3_cropped.jpeg', '5':'Dataset_ASL/5/hand1_5_dif_seg_3_cropped.jpeg', '6':'Dataset_ASL/6/hand1_6_dif_seg_5_cropped.jpeg', '7':'Dataset_ASL/7/hand1_7_right_seg_1_cropped.jpeg', '8':'Dataset_ASL/8/hand1_8_bot_seg_2_cropped.jpeg', '9':'Dataset_ASL/9/hand1_9_bot_seg_4_cropped.jpeg', 'a':'Dataset_ASL/a/hand1_a_bot_seg_3_cropped.jpeg', 'c':'Dataset_ASL/c/hand1_c_bot_seg_5_cropped.jpeg', 'd':'Dataset_ASL/d/hand1_d_bot_seg_3_cropped.jpeg', 'e':'Dataset_ASL/e/hand1_e_bot_seg_4_cropped.jpeg', 'f':'Dataset_ASL/f/hand1_f_left_seg_1_cropped.jpeg', 'g':'Dataset_ASL/g/hand1_g_bot_seg_4_cropped.jpeg', 'h':'Dataset_ASL/h/hand1_h_dif_seg_2_cropped.jpeg', 'i':'Dataset_ASL/i/hand1_i_bot_seg_3_cropped.jpeg', 'j':'Dataset_ASL/j/hand1_j_bot_seg_4_cropped.jpeg', 'k':'Dataset_ASL/k/hand1_k_bot_seg_4_cropped.jpeg', 'l':'Dataset_ASL/l/hand1_l_bot_seg_5_cropped.jpeg', 'm':'Dataset_ASL/m/hand1_m_bot_seg_1_cropped.jpeg', 'n':'Dataset_ASL/n/hand1_n_bot_seg_2_cropped.jpeg', 'o':'Dataset_ASL/o/hand1_o_bot_seg_3_cropped.jpeg', 'p':'Dataset_ASL/p/hand1_p_bot_seg_4_cropped.jpeg', 'q':'Dataset_ASL/q/hand1_q_right_seg_2_cropped.jpeg', 'r':'Dataset_ASL/r/hand1_r_bot_seg_1_cropped.jpeg', 's':'Dataset_ASL/s/hand1_s_bot_seg_2_cropped.jpeg', 't':'Dataset_ASL/t/hand1_t_bot_seg_3_cropped.jpeg', 'u':'Dataset_ASL/u/hand1_u_bot_seg_4_cropped.jpeg', 'v':'Dataset_ASL/v/hand1_v_bot_seg_5_cropped.jpeg', 'w':'Dataset_ASL/w/hand1_w_bot_seg_1_cropped.jpeg', 'x':'Dataset_ASL/x/hand1_x_bot_seg_2_cropped.jpeg', 'y':'Dataset_ASL/y/hand1_y_bot_seg_3_cropped.jpeg', 'z':'Dataset_ASL/z/hand1_z_bot_seg_4_cropped.jpeg'}
     
     #To randomise the letters for game
     def getNextLetter(): 
@@ -203,15 +203,15 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
             img = cv2.cvtColor(DrawBoundingBox(img, result, predicted_character,color), cv2.COLOR_RGB2BGR)
         
         img = cv2.resize(img, (int((width/4)*3), height), interpolation = cv2.INTER_LINEAR)
-        hint_button = Button(tk_win, text="Hint", command = show_hint,bd=3, fg='black',bg='#75706f', height=2).place(x =img.shape[1], y = 0)
+        hint_button = Button(tk_win, text="Hint", command = show_hint,bd=3, fg='black',bg='#75706f', height=2).place(x =img.shape[-1], y = 0)
         #hint_button.grid(row = 1, column = 3,columnspan=2,sticky='nsew')
-        #
+        
         
         #For the hint image
         if show_hint_img == True:
             hint_image = cv2.resize(cv2.imread(lab[(letter[0])]), None, fx = 0.5, fy = 0.5)
             #x_end = 690 + hint_image.shape[1]  #890
-            x_start = img.shape[1]-hint_image.shape[1]
+            x_start = img.shape[1]-hint_image.shape[1] 
             y_end = 0 + hint_image.shape[0]
             img[0:y_end,x_start :img.shape[1]] = cv2.cvtColor(hint_image, cv2.COLOR_RGB2BGR)
         
