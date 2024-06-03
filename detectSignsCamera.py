@@ -26,7 +26,8 @@ def detect_image_gui(tk_win: Tk):
 
     # Set the title of the main window
     tk_win.title('ASL Alphabet Recognition')
-    
+    tk_win.state('zoomed')
+    tk_win.attributes('-fullscreen', True)
     # Get the screen width and height
     width = tk_win.winfo_screenwidth()
     height = tk_win.winfo_screenheight()
@@ -204,7 +205,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
                     values.update(up_dict)
                     if show_hint_img: 
                         score -= 5
-                        show_hint_img = False
+                        #show_hint_img = False
                     else:
                         score += 10
                     update_values()
@@ -244,8 +245,6 @@ if __name__ == "__main__":
     # Create the main window
     tk_win = Tk() 
     detect_image_gui(tk_win)
-    
-tk_win.state('zoomed')
-tk_win.mainloop()
+
 
     
