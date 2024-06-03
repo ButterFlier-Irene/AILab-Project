@@ -16,8 +16,8 @@ model.py - Creating the model
 model.joblib - Our saved model 
 
 kidsdictionary.py - Creating a dictionary for the kids imgs
-detectSignsCamera.py - The interface and the videocapture. The main file that can be run
+detectSigns.py - The interface and the videocapture. The main file that can be run.
 
 kidsimgs folder - Contains all the imgs for kids mode
-Score.mp3 - Used for the gamemode
+score.mp3 - Used for the gamemode
 ```

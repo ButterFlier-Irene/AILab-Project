@@ -1,12 +1,12 @@
 from tkinter import GROOVE, Button, Frame, Label, Tk
-from HandLandmarks import get_landmarks, draw_landmarks, draw_bounding_box
+from handLandmarks import get_landmarks, draw_landmarks, draw_bounding_box
 from PIL import Image, ImageTk
 import cv2
 import numpy as np
 import joblib, random
 import pandas as pd
 from kidsdictionary import get_kids_dict
-from playsound import playsound
+from playsound import playsound # Install note below
 
 '''
 Notice that when you are installing playsound, you need the version 1.2.2 
@@ -210,7 +210,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
             else:
                 if prediction == letter:
                     color = (0,215,255)
-                    playsound('Score.mp3')
+                    playsound('score.mp3')
                     v = values.get(letter) + 1
                     up_dict = {letter:v}
                     values.update(up_dict)

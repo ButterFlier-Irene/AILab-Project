@@ -1,7 +1,7 @@
 import os
 import cv2
 import pandas as pd
-from HandLandmarks import get_landmarks
+from handLandmarks import get_landmarks
 from torch.utils.data import Dataset
 '''
 The purpose of this python file is to create
