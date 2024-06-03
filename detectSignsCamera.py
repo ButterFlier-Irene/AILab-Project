@@ -1,4 +1,3 @@
-
 from tkinter import GROOVE, Button, Frame, Label, Tk
 from handLandmarks import GetLandmarks, DrawLandmarks, DrawBoundingBox
 from PIL import Image, ImageTk
@@ -12,11 +11,9 @@ from playsound import playsound
 '''
 In this file we are using a GUI interface to show the model doing it's job.
 If you are running this code on a Apple device, you can run directly the code below.
-If you are on a Windows device you need to do some changes before running the code:
-    - change on line 40 the size of the font, from 26 to 17. This will help you
+If you are on a Windows device you need to do a change before running the code:
+    - change on line 43 the size of the font, from 26 to 17. This will help you
       to have a better experience with the interface
-    - comment the line 216. There is an incompatibility between the two operating systems
-      that doesn't allow you to use the Hint button (it will glitch on the Windows interface)
 '''
 def detect_image_gui(tk_win: Tk):
     '''
@@ -43,7 +40,7 @@ def detect_image_gui(tk_win: Tk):
     label_widget_video.grid(row = 0, column = 0, sticky = 'w',rowspan=22, columnspan=3)
     
     title_frame = Frame(tk_win, width=int(width/4), height=height,bg="#494848").place(x=int(width-(width/4)))
-    title_label = Label(title_frame,text=' ASL Alphabet Recognition ',font=('Helvetica', 26, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE) #put, instead of 26, if you are working on a windows computer
+    title_label = Label(title_frame,text=' ASL Alphabet Recognition ',font=('Helvetica', 17, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE) #put, instead of 26, if you are working on a windows computer
     title_label.grid(row = 0,column=3, columnspan=2,sticky='nsew')
 
     exit_button=Button(tk_win, text="EXIT",fg='black',bg='#75706f', command=tk_win.destroy,relief=GROOVE,height= int(height/250),padx=20)
@@ -161,7 +158,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         data = pd.read_csv('dataset.csv')
         values = dict.fromkeys(set(data.label), 0)
         update_values()
-        hint_button = Button(tk_win, text="Hint", command = lambda:show_hint(),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE, height=2)
+        hint_button = Button(tk_win, text="Hint", font=('Helvetica', 20, 'bold'), command = lambda:show_hint(),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE, height=2)
         hint_button.grid(row = 1, column = 4 ,sticky='nsew')
         
     else:
