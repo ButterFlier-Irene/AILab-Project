@@ -1,9 +1,11 @@
 import os
 import cv2
+
 '''
 In this file we want to save in a dictionary some images related to the
 KIDS MODE of the interface (see also file 'detectSignsCamera.py').
 '''
+
 # Define the directory path
 photos_dir = 'kidsimgs'
 
@@ -44,4 +46,3 @@ def get_kids_dict():
 get_kids_dict()
     
     
-

@@ -1,13 +1,15 @@
 import mediapipe as mp 
 import cv2
-'''Here we try to define the most important and basic functions that
+
+'''
+Here we try to define the most important and basic functions that
 Mediapipe can be useful for.
 We defined three main functions:
-    -GetLandmarks, which gives us the coordinates of the hand
-    -DrawLandmarks, which draws on the input image the detected landmarks
-    -DrawBoundingBox, which highlights the hand with a rectangle  and shows 
-    predicted value
+    - get_landmarks, which gives us the coordinates of the hand
+    - draw_landmarks, which draws on the input image the detected landmarks
+    - draw_bounding_box, which highlights the hand with a rectangle  and shows the predicted value
 '''
+
 landmarks = mp.solutions
 hands_mp = landmarks.hands 
 hands = hands_mp.Hands(static_image_mode = True, 
@@ -17,10 +19,13 @@ hands = hands_mp.Hands(static_image_mode = True,
 drawing_mp = landmarks.drawing_utils         # module for drawing the landmarks on the screen
 drawing_styles_mp = landmarks.drawing_styles # module for colored visualization of the landmarks #this helps us distinguish different fingers
 
-def GetLandmarks(image):
-    '''With this function we want to extract the coordinates 
+def get_landmarks(image):
+    
+    '''
+    With this function we want to extract the coordinates 
     from the input image and output, if there are, the coordinates
-    in a list arranged form.'''
+    in a list arranged form.
+    '''
     coordinates = '' 
     result = hands.process(image) 
     if result.multi_hand_landmarks:                          #if many landmarks are detected
@@ -31,9 +36,11 @@ def GetLandmarks(image):
             coordinates = cooxy
     return coordinates,result
 
-def DrawLandmarks(image, result):
-    '''With this function we want to draw the landmarks
-    directly on the image we are inputting. '''
+def draw_landmarks(image, result):
+    '''
+    With this function we want to draw the landmarks
+    directly on the image we are inputting. 
+    '''
     if result.multi_hand_landmarks:                                     #if many landmarks are detected
         for hand_landmarks in result.multi_hand_landmarks:              #for each hand landmark recognised 
             drawing_mp.draw_landmarks(
@@ -46,11 +53,14 @@ def DrawLandmarks(image, result):
     return image
 
 
-def DrawBoundingBox(image, result, predicted_character,color):
-    '''This function gets an image, the landmarks features
+def draw_bounding_box(image, result, predicted_character,color):
+    
+    ''' 
+    This function gets an image, the landmarks features
     and the predicted character and return the same image 
     with a rectangle indicating the hand detected with
-    the predicted value.'''
+    the predicted value.
+    '''
     if result.multi_hand_landmarks:
         for hand_landmarks in result.multi_hand_landmarks:
             

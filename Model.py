@@ -10,9 +10,10 @@ from sklearn.pipeline import make_pipeline
 import seaborn as sns
 import joblib
 
-'''Here we work on the SVM classifier:
+'''
+Here we work on the SVM classifier:
 we recover the coordinates' dataset and we split it into training and 
-testing sets
+testing sets.
 We then train the hyperparameters C and gamma of SVC using the
 RBF kernel (specified in the param_grid). To do so we use RandomizedSearchCV
 Once the model is fitted and the hyperparameters are tuned we show the 
@@ -29,21 +30,20 @@ with its tuned hyperparameters. We do not promise it will remain the same
 #model = make_pipeline(pca, svc)
 #####################################################################################
 
-data = pd.read_csv('coordinates.csv') #we have directly the file as a pandas dataframe
+data = pd.read_csv('coordinates.csv') # we have directly the file as a pandas dataframe
 coo = np.array([np.array(co) for co in data.coordinates.apply(ast.literal_eval)]).reshape(2512, 42)
 target = np.array(data.labels)
 
-#####################################################################################
 
 X_train, X_test, y_train, y_test = train_test_split(coo, target, random_state=0, train_size=0.7)
 
-#####################################################################################
 
 skf = StratifiedKFold(n_splits=5, shuffle=True)
 
 param_grid = {'C': list(np.logspace(-2, 10, 13)),  
               'gamma': list(np.logspace(-9, 3, 13)), 
               'kernel': ['rbf']} 
+
 grid = RandomizedSearchCV(SVC(), param_grid, cv=skf, scoring='accuracy', n_iter=10)
 grid.fit(X_train, y_train)
 #print(grid.best_params_)
@@ -56,7 +56,9 @@ acc = accuracy_score(y_test, y_pred)
 
 print(acc) # 95.22% accuracy the second time we run it
 
-#joblib.dump(model, "model.joblib") #careful: it will save every time the new model (always with different score) into 'model.joblib' file
+
+# careful: it will save every time the new model (always with different score) into 'model.joblib' file
+#joblib.dump(model, "model.joblib") 
 
 ######################################################################################
 '''
@@ -65,11 +67,14 @@ For the validation curves, we first considered C fixed and then gamma fixed to t
 hyperparameters. This is because the validation curve cannot plot the change of 
 two different hyperparameters at the same time.
 The last part plots a Confusion matrix together with the classification report
-To compare the predicted labels.'''
+To compare the predicted labels.
+'''
+
 '''
 #param_name, param_range = "C", np.logspace(-2, 10, 13)
 #param_name, param_range = "gamma", np.logspace(-9, 3, 13)
 '''
+
 '''
 #Validation curve
 train_scores, val_scores = validation_curve(SVC(C=1000000.0), X_train, y_train, param_name=param_name, param_range=param_range, cv=5)
@@ -79,8 +84,9 @@ display = ValidationCurveDisplay(
 )
 display.plot()
 plt.show()
-
 '''
+
+
 '''
 #Learning curve
 train_sizes, train_scores, test_scores = learning_curve(SVC(kernel='rbf', C=1000000.0, gamma=0.001), coo, target)
@@ -88,6 +94,8 @@ display = LearningCurveDisplay(train_sizes=train_sizes, train_scores=train_score
 display.plot()
 plt.show()
 '''
+
+
 '''
 # Clasification report
 
