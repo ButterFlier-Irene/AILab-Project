@@ -17,7 +17,8 @@ def get_kids_dict():
     if os.path.exists(photos_dir):
         # Get the list of files
         files = [f for f in os.listdir(photos_dir) if os.path.isfile(os.path.join(photos_dir, f))]
-        
+        files.sort()
+        print(files)
         # Check if there are more files than labels
         if len(files) > len(labels):
             print("Warning: There are more files than labels. Some files will not be labeled.")
