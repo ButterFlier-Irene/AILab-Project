@@ -35,7 +35,7 @@ def DrawLandmarks(image, result):
     return image
 
 
-def DrawBoundingBox(image, result, predicted_character,color):
+def DrawBoundingBox(image, result, predicted_character):
     if result.multi_hand_landmarks:
         for hand_landmarks in result.multi_hand_landmarks:
             
