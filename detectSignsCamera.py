@@ -6,14 +6,8 @@ import cv2
 import numpy as np
 import joblib, random
 import pandas as pd
-import IPython.display 
-import time
-<<<<<<< HEAD
-=======
-import os
 from kidsdictionary import get_kids_dict
->>>>>>> Irene_Branch
-#import playsound
+from playsound import playsound
 
 def detect_image_gui(tk_win: Tk):
     
@@ -81,6 +75,8 @@ def detect_image_gui(tk_win: Tk):
         detect_signs(tk_win, label_widget_video, kids_mode = False)
 
     def go_on():
+        kids_panel= Label(tk_win,text='Show a Sign',font=('Helvetica', 20, 'bold'),bd=3,fg='#2c2c2c',relief=GROOVE)
+        kids_panel.grid(row = 2, column = 3,columnspan=2,rowspan=18, sticky='nsew')
         kids_mode_label=Label(tk_win,text='KIDS MODE',font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
         kids_mode_label.grid(row = 1, column = 3,columnspan=2,sticky='nsew')
 >>>>>>> Irene_Branch
@@ -118,6 +114,9 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
     labels = {'0':'0','1': '1', '2': '2', '3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9','a':'A','b':'B','c':'C','d':'D','e':'E','f':'F','g':'G','h':'H','i':'I','j':'J','k':'K','l':'L','m':'M','n':'N','o':'O','p':'P','q':'Q','r':'R','s':'S','t':'T','u':'U','v':'V','w':'W','x':'X','y':'Y','z':'Z'}
     lab = {'b':'Dataset_ASL/b/hand1_b_left_seg_1_cropped.jpeg','1': 'Dataset_ASL/1/hand1_1_bot_seg_2_cropped.jpeg', '4': 'Dataset_ASL/4/hand1_4_bot_seg_4_cropped.jpeg'}
     
+    def update_score(score):
+        label2=Label(tk_win,text=f' Score:  {score}' ,font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
+        label2.grid(row = 1, column = 3,columnspan=2,sticky='nsew')
 
     #The labels, the letter that is recognised most will be on the top of the list in the interface
     def update_values():
@@ -131,18 +130,6 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
             if i == 20:
                 i = 2 ; a += 1 #To create 2 columns 
 
-    # Function to display image given a specific label
-    def show_image(label, imgs_dict):
-        if label in imgs_dict:
-            image = imgs_dict[label]
-            # Convert the image from BGR (OpenCV format) to RGB
-            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            # Convert the image to a PIL format
-            image_pil = Image.fromarray(image_rgb)
-            return image_pil
-        else:
-            print(f"Label '{label}' not found in the dictionary.")
-            return None
 
     def open_img(letter,imgs_dict):
         img_pil = show_image(letter,imgs_dict)  # Change 'A' to any label you want to display
@@ -171,22 +158,14 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
 =======
     show_hint_img = False
     
->>>>>>> Irene_Branch
-    def show_hint():
-        nonlocal show_hint_img
-        if show_hint_img:
-              show_hint_img = False
-        else:
-            show_hint_img = True
-<<<<<<< HEAD
-    
-    # Load the pre-trained model
-    our_model = joblib.load("model.joblib")
-    
-    # Init videocapture
-    cap = cv2.VideoCapture(0)
+    #def show_hint(score):
+      #  return score
+       # nonlocal show_hint_img
+       # show_hint_img = True
+       # score -= 5
+       # update_score(score)
+        
 
-=======
         
 
     #To randomise the letters for game
@@ -194,14 +173,19 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         return random.choice(list(lab.keys()))
     letter = getNextLetter()
     
-    #The dictionary for the scores
-    data = pd.read_csv('dataset.csv')
-    values = dict.fromkeys(set(data.label), 0)
+    
     if kids_mode == False:
+                #The dictionary for the scores
+        data = pd.read_csv('dataset.csv')
+        values = dict.fromkeys(set(data.label), 0)
         update_values()
+        update_score(score)
+        
     else:
         if letter.isalpha():
-            open_img(letter,imgs_dict)
+            open_img(letter,imgs_dict)  
+
+
     
     # Load the pre-trained model
     our_model = joblib.load("model.joblib")
@@ -215,49 +199,46 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB) # converting the channels
         coordinates, result = GetLandmarks(img)
         cv2.putText(img,  f"Show Letter {letter.upper()}",  (50, 100),  cv2.FONT_HERSHEY_SIMPLEX, 2,  (255, 255, 255),  6,  cv2.LINE_4) 
-        #if kids_mode == True:
-          #  open_img()
+
         if coordinates != '':
             img = cv2.cvtColor(DrawLandmarks(img, result), cv2.COLOR_RGB2BGR)
             coordinates = np.array(coordinates).reshape(1, 42)
             prediction = our_model.predict(coordinates)
             predicted_character = labels[(prediction[0])]
-            
-            if kids_mode == True:
+            print('bhjsghgefhaf', kids_mode)
+            if kids_mode == False:
+                if prediction == letter:
+                    color = (0,215,255)
+                    playsound('Score.mp3')
+                    v = values.get(letter) + 1
+                    up_dict = {letter:v}
+                    values.update(up_dict)
+                    score += 10
+                    update_values()
+                    update_score(score)
+                    letter = getNextLetter()
+                else :
+                    color = (0,0,0)     
+            else:   
+                color = (0,0,0)      
                 if prediction[0].isalpha():  #checking for aphabet letters since we have only images for these
                     open_img(prediction[0],imgs_dict)
             
-            if prediction == letter:
-                color = (0,215,255)
-                v = values.get(letter) + 1
-                up_dict = {letter:v}
-                values.update(up_dict)
-                if kids_mode == False:
-                    score += 10
-                    update_values()
-               # else: 
-                  #  open_img(predicted_character)
-                letter = getNextLetter()
-            else :
-                color = (0,0,0)     
+                
+                
             
-            img = cv2.cvtColor(DrawBoundingBox(img, result, predicted_character,color), cv2.COLOR_RGB2BGR)
+            img = cv2.cvtColor(DrawBoundingBox(img, result, predicted_character,color ), cv2.COLOR_RGB2BGR)
         
         img = cv2.resize(img, (int((width/4)*3), height), interpolation = cv2.INTER_LINEAR)
-<<<<<<< HEAD
-        hint_button = Button(tk_win, text="Hint", command = show_hint,bd=3, fg='black',bg='#75706f', height=2).place(x =img.shape[-1], y = 0)
-
-=======
-        hint_button = Button(tk_win, text="Hint", command = show_hint,bd=3, fg='black',bg='#75706f', height=2).place(x =img.shape[1], y = 0)
+       # hint_button = Button(tk_win, text="Hint", command = show_hint(score),bd=3, fg='black',bg='#75706f', height=2).place(x =img.shape[1], y = 0)
         
-        
->>>>>>> Irene_Branch
         #For the hint image
         if show_hint_img == True:
             hint_image = cv2.resize(cv2.imread(lab[(letter[0])]), None, fx = 0.5, fy = 0.5)
             x_start = img.shape[1]-hint_image.shape[1] 
             y_end = 0 + hint_image.shape[0]
             img[0:y_end,x_start :img.shape[1]] = cv2.cvtColor(hint_image, cv2.COLOR_RGB2BGR)
+            
         
         # Convert the image to a PIL image
         image_tk = Image.fromarray(img)
@@ -273,55 +254,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         tk_win.update()
     cap.release()
 
-'''
-def kidsmode(predicted_character):
-    # Define the directory path
-    photos_dir = 'kidsimgs'
-    # Define the labels
-    labels = ['a',]
-    # Initialize an empty dictionary to store images
-    images_dict = {}
-    # Ensure the directory exists
-    if os.path.exists(photos_dir):
-        # Get the list of files
-        files = [f for f in os.listdir(photos_dir) if os.path.isfile(os.path.join(photos_dir, f))]
-    
-        # Check if there are more files than labels
-        if len(files) > len(labels):
-            print("Warning: There are more files than labels. Some files will not be labeled.")
-    
-        # Iterate over the files and labels
-        for label, item in zip(labels, files):
-            item_path = os.path.join(photos_dir, item)
-        
-            # Read the image file using OpenCV
-            image = cv2.imread(item_path)
-        
-            # Check if the image was successfully read
-            if image is not None:
-                # Store the image in the dictionary with the corresponding label
-                images_dict[label] = image
-            else:
-                print(f"Failed to read the image file '{item_path}'")
-    else:
-        print(f"The directory '{photos_dir}' does not exist.")
 
-    # Function to display image given a specific label
-        def show_image(predicted_character ):
-            if label in images_dict:
-                image = images_dict[label]
-            
-                # Convert the image from BGR (OpenCV format) to RGB
-                image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            
-                # Convert the image to a PIL format
-                image_pil = Image.fromarray(image_rgb)
-            
-                return image_pil
-            else:
-                print(f"Label '{label}' not found in the dictionary.")
-                return None
-'''
 
 if __name__ == "__main__":
     # Create the main window
