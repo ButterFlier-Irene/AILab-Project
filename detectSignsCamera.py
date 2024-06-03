@@ -44,7 +44,7 @@ def detect_image_gui(tk_win: Tk):
     label_widget_video.grid(row = 0, column = 0, sticky = 'w',rowspan=22, columnspan=3)
     
     title_frame = Frame(tk_win, width=int(width/4), height=height,bg="#494848").place(x=int(width-(width/4)))
-    title_label = Label(title_frame,text=' ASL Alphabet Recognition ',font=('Helvetica', 17, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE) #put, instead of 26, if you are working on a windows computer
+    title_label = Label(title_frame,text=' ASL Alphabet Recognition ',font=('Helvetica', 17, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE) #use 17 font size if you are working on a windows computer or 26 font size for mac
     title_label.grid(row = 0,column=3, columnspan=2,sticky='nsew')
 
     exit_button=Button(tk_win, text="EXIT",fg='black',bg='#75706f', command=tk_win.destroy,relief=GROOVE,height= int(height/250),padx=20)
@@ -205,7 +205,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
                     values.update(up_dict)
                     if show_hint_img: 
                         score -= 5
-                        #show_hint_img = False
+                        show_hint_img = False
                     else:
                         score += 10
                     update_values()
