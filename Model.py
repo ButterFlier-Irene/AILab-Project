@@ -60,10 +60,10 @@ print(acc) # 95.22% accuracy the second time we run it
 
 ######################################################################################
 '''
-This second part was used to plot some graphs like the Validation and Learning curves.
-For the validation curves, we considered First C fixed and then gamma fixed to the best
-hyperparameters we found. This because the validation curve cannot plot the change of 
-two different hyperparameters.
+This second commented part was used to plot some graphs like the Validation and Learning curves.
+For the validation curves, we first considered C fixed and then gamma fixed to the get the best
+hyperparameters. This is because the validation curve cannot plot the change of 
+two different hyperparameters at the same time.
 The last part plots a Confusion matrix together with the classification report
 To compare the predicted labels.'''
 '''
