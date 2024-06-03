@@ -1,7 +1,7 @@
 import os
 import cv2
 import pandas as pd
-from handLandmarks import GetLandmarks
+from handLandmarks import get_landmarks
 from torch.utils.data import Dataset
 '''
 The purpose of this python file is to create
@@ -84,12 +84,12 @@ class MpDataset(Dataset):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         
         label = self.labels.iloc[index, 2]
-        result = GetLandmarks(imgRGB)[0]
+        result = get_landmarks(imgRGB)[0]
         if result != '':                     #case where we detect the landmarks
             self.coordinates.append(result)     
         else:                                #case where we need to add the border
             imgRGB= self.addBorder(imgRGB)
-            result = GetLandmarks(imgRGB)[0]
+            result = get_landmarks(imgRGB)[0]
             self.coordinates.append(result)
            
 ####################################################################

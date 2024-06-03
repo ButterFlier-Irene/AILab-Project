@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import numpy as np
+
 '''
 the purpose of this python file is to create a file 
 containing the labels and the image name of the
@@ -20,9 +21,9 @@ images = []
 
 for path in os.listdir('Dataset_ASL'):
     for i in os.listdir('Dataset_ASL/'+path):
-        labels.append(path)                  #name of the image, contained in the list of directories.
-        images.append(i)                     #labels (same as folder name).
+        labels.append(path)                  # name of the image, contained in the list of directories.
+        images.append(i)                     # labels (same as folder name).
 
-d={'img':images,'label':labels}              #same number of images and labels.
+d={'img':images,'label':labels}              # same number of images and labels.
 df=pd.DataFrame(data=d)
-df.to_csv('dataset.csv')                     #name of the file we are gonna store the result.
+df.to_csv('dataset.csv')                     # name of the file we are gonna store the result.
