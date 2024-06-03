@@ -7,7 +7,10 @@ import joblib, random
 import pandas as pd
 from kidsdictionary import get_kids_dict
 from playsound import playsound
-
+'''
+Notice that when you are installing playsound, you need the version 1.2.2  .
+Please, use the following command : pip install playsound==1.2.2  .
+'''
 '''
 In this file we are using a GUI interface to show the model doing it's job.
 If you are running this code on a Apple device, you can run directly the code below.
@@ -132,7 +135,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         will show how many times you have done the right 
         sign for each letter.
         '''
-        label2=Label(tk_win,text=f' Score:  {score}' ,font=('Helvetica', 20, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
+        label2=Label(tk_win,text=f' Score:  {score}' ,font=('Helvetica', 16, 'bold'),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE)
         label2.grid(row = 1, column = 3,sticky='nsew')
         i = 2 ; a = 3
         #The labels, the letter that is recognised most will be on the top of the list in the interface
@@ -158,7 +161,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         data = pd.read_csv('dataset.csv')
         values = dict.fromkeys(set(data.label), 0)
         update_values()
-        hint_button = Button(tk_win, text="Hint", font=('Helvetica', 20, 'bold'), command = lambda:show_hint(),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE, height=2)
+        hint_button = Button(tk_win, text="Hint", font=('Helvetica', 16, 'bold'), command = lambda:show_hint(),bd=3,bg='#b4b4b4',fg='#2c2c2c',relief=GROOVE, height=2)
         hint_button.grid(row = 1, column = 4 ,sticky='nsew')
         
     else:
@@ -179,7 +182,6 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         _, img = cap.read()
         img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB) # converting the channels
         coordinates, result = GetLandmarks(img)
-        cv2.putText(img,  f"Show Letter {letter.upper()}",  (50, 100),  cv2.FONT_HERSHEY_SIMPLEX, 2,  (255, 255, 255),  6,  cv2.LINE_4) 
 
         if coordinates != '':
             img = cv2.cvtColor(DrawLandmarks(img, result), cv2.COLOR_RGB2BGR)
@@ -216,6 +218,7 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
         
         #For the hint image
         if not kids_mode:
+            cv2.putText(img,  f"Show Letter {letter.upper()}",  (50, 100),  cv2.FONT_HERSHEY_SIMPLEX, 2,  (255, 255, 255),  6,  cv2.LINE_4) 
             if show_hint_img == True :
                 hint_image = cv2.resize(cv2.imread(lab[(letter[0])]), None, fx = 0.5, fy = 0.5)
                 x_start = img.shape[1]-hint_image.shape[1] 
