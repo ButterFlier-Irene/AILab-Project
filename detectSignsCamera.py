@@ -13,7 +13,7 @@ If you are running this code on a Apple device, you can run directly the code be
 If you are on a Windows device you need to do some changes before running the code:
     - change on line 40 the size of the font, from 26 to 17. This will help you
       to have a better experience with the interface
-    - comment the line 174. There is an incompatibility between the two operator systems
+    - comment the line 216. There is an incompatibility between the two operator systems
       that doesn't allow you to use the Hint button (it will glitch on the Windows interface)
 '''
 def detect_image_gui(tk_win: Tk):
