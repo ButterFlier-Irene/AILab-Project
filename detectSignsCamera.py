@@ -101,12 +101,12 @@ def detect_signs(tk_win: Tk,  label_widget_video: Label,kids_mode: bool):
             # Convert the image to a PIL format
             image_pil = Image.fromarray(image_rgb)
             return image_pil
-        #else:
-        #    print(f"Label '{label}' not found in the dictionary.")
-        #    return None
 
     def open_img(letter,imgs_dict):
-        img_pil = show_image(letter,imgs_dict)  # Change 'A' to any label you want to display
+        '''
+        Here we actually show the right image under the 
+        '''
+        img_pil = show_image(letter,imgs_dict)
         if img_pil:
             img_pil = img_pil.resize((250, 250))
             img_tk = ImageTk.PhotoImage(img_pil)

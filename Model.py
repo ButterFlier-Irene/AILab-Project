@@ -9,6 +9,7 @@ from sklearn.decomposition import PCA as RandomizedPCA
 from sklearn.pipeline import make_pipeline
 import seaborn as sns
 import joblib
+
 '''Here we work on the SVM classifier:
 we recover the coordinates' dataset and we split it into training and 
 testing sets
@@ -19,7 +20,9 @@ accuracy and we save the model:
 ATTENTION: the first commented was considered when we used the PCA
 to see how much the accuracy changed.
 The joblib.dump is commented since we wanted to keep the best model 
-with its tuned hyperparameters. We do not promise it will remain the same'''
+with its tuned hyperparameters. We do not promise it will remain the same
+'''
+
 # defining pca model
 #pca = RandomizedPCA(n_components=42, whiten=True, random_state=42)
 #svc = SVC(kernel = 'rbf', class_weight='balanced') #'C=1000000.0, gamma=0.001 are the values for the best accuracy we had
